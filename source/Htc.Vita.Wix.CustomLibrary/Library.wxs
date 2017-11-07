@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <Binary
+        Id="Vita.Wix.CA.dll"
+        SourceFile="$(var.Htc.Vita.Wix.CustomAction.net45.TargetDir)Htc.Vita.Wix.CustomAction.CA.dll"
+    />
+    <CustomAction
+        Id="Vita_SidTranslate"
+        BinaryKey="Vita.Wix.CA.dll"
+        DllEntry="SidTranslate"
+        Execute="immediate"
+        Return="check"
+    />
+    <InstallExecuteSequence>
+      <Custom
+          Action="Vita_SidTranslate"
+          After="InstallInitialize"
+      />
+    </InstallExecuteSequence>
+  </Fragment>
+</Wix>

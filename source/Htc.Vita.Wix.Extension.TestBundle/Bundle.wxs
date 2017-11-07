@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix
+    xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Bundle
+      Name="Htc.Vita.Wix.Extension.TestBundle"
+      Manufacturer="HTC Corp."
+      UpgradeCode="66960f01-ce93-4df1-ab23-a09e141d3a1d"
+      Version="!(bind.packageVersion.Htc.Vita.Wix.Extension.TestPackage.x86)">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+    <Variable
+        Name="InstallFolder"
+        Type="string"
+        Value="[ProgramFiles6432Folder]Htc.Vita.Wix.Extension.TestBundle"
+    />
+    <Chain>
+      <MsiPackage
+          Id="Htc.Vita.Wix.Extension.TestPackage.x64"
+          InstallCondition="VersionNT64"
+          SourceFile="$(var.Htc.Vita.Wix.Extension.TestPackage.x64.TargetPath)">
+        <MsiProperty
+            Name="INSTALLFOLDER"
+            Value="[InstallFolder]"
+        />
+      </MsiPackage>
+      <MsiPackage
+          Id="Htc.Vita.Wix.Extension.TestPackage.x86"
+          InstallCondition="NOT VersionNT64"
+          SourceFile="$(var.Htc.Vita.Wix.Extension.TestPackage.x86.TargetPath)">
+        <MsiProperty
+            Name="INSTALLFOLDER"
+            Value="[InstallFolder]"
+        />
+      </MsiPackage>
+    </Chain>
+  </Bundle>
+</Wix>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<tableDefinitions xmlns="http://schemas.microsoft.com/wix/2006/tables">
+  <tableDefinition
+      name="VitaSidTranslate"
+      createSymbols="yes">
+    <columnDefinition
+        name="Sid"
+        type="string"
+        length="72"
+        primaryKey="yes"
+        category="text"
+        description="Windows Security Identifier"
+    />
+    <columnDefinition
+        name="PropertyId"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Identifier reference of Property to keep translated name"
+    />
+  </tableDefinition>
+</tableDefinitions>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>7d59dcfb-0455-4f10-8a07-08a3606690f4</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <ProductVersion>3.11</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>Htc.Vita.Wix.CustomLibrary</OutputName>
+    <DefineSolutionProperties>false</DefineSolutionProperties>
+    <LibBindFiles>True</LibBindFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>Debug</DefineConstants>
+    <IntermediateOutputPath>..\..\temp\$(Configuration)\$(OutputName)\obj\$(Platform)</IntermediateOutputPath>
+    <OutputPath>..\..\temp\$(Configuration)\$(OutputName)\bin\$(Platform)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <IntermediateOutputPath>..\..\temp\$(Configuration)\$(OutputName)\obj\$(Platform)</IntermediateOutputPath>
+    <OutputPath>..\..\temp\$(Configuration)\$(OutputName)\bin\$(Platform)</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Library.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Htc.Vita.Wix.CustomAction\Htc.Vita.Wix.CustomAction.net45.csproj">
+      <Name>Htc.Vita.Wix.CustomAction.net45</Name>
+      <Project>{a2a44dae-ee42-4f7c-9adf-76cffe12b546}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
+  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
+    <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
+  </Target>
+  <!--
+  To modify your build process, add your task inside one of the targets below and uncomment it.
+  Other similar extension points exist, see Wix.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

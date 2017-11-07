@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+    id="Schema"
+    targetNamespace="http://www.viveport.com/Htc.Vita.Wix.Extension"
+    elementFormDefault="qualified"
+    xmlns="http://www.viveport.com/Htc.Vita.Wix.Extension"
+    xmlns:mstns="http://www.viveport.com/Htc.Vita.Wix.Extension"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xse="http://schemas.microsoft.com/wix/2005/XmlSchemaExtension">
+  <xs:annotation>
+    <xs:documentation>
+      This XML Schema is for Htc.Vita.Wix.Extension project
+    </xs:documentation>
+  </xs:annotation>
+  <xs:element name="SidTranslate">
+    <xs:annotation>
+      <xs:appinfo>
+        <xse:parent
+            namespace="http://schemas.microsoft.com/wix/2006/wi"
+            ref="Product"
+        />
+        <xse:parent
+            namespace="http://schemas.microsoft.com/wix/2006/wi"
+            ref="Fragment"
+        />
+      </xs:appinfo>
+      <xs:documentation>
+        A custom element for translating Windows security identifier (SID) string to user / group name under current locale.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute
+          name="Id"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The ID for the element.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute
+          name="Key"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The key name of SID. For example S-1-5-11 is about Authenticated Users.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute
+          name="Value"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The property value name to keep the translated result.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
