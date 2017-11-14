@@ -6,7 +6,7 @@ namespace Htc.Vita.Wix.CustomAction
 {
     internal class SidTranslateExecutor : AbstractActionExecutor
     {
-        public SidTranslateExecutor(Session session) : base("SidTranslate", session)
+        public SidTranslateExecutor(Session session) : base("SidTranslateExecutor", session)
         {
         }
 
