@@ -34,13 +34,13 @@
         Value="LocalizedName_AuthenticatedUsers"
     />
     <Property
-      Id="LocalizedName_Users"
-      Value="Users"
+        Id="LocalizedName_Users"
+        Value="Users"
     />
     <vita:SidTranslate
-      Id="TranslateSid_Users"
-      Key="S-1-5-32-545"
-      Value="LocalizedName_Users"
+        Id="TranslateSid_Users"
+        Key="S-1-5-32-545"
+        Value="LocalizedName_Users"
     />
     <Feature
         Id="ProductFeature"
@@ -64,12 +64,12 @@
         Directory="INSTALLFOLDER">
       <Component Id="ProductComponents_DummyApp.exe">
         <File
-          Id="DummyApp.exe"
-          KeyPath="yes"
-          Source="$(var.Htc.Vita.Wix.DummyApp.net45.TargetDir)DummyApp.exe">
+            Id="DummyApp.exe"
+            KeyPath="yes"
+            Source="$(var.Htc.Vita.Wix.DummyApp.net45.TargetDir)DummyApp.exe">
           <util:PermissionEx
-            User="[LocalizedName_AuthenticatedUsers]"
-            GenericAll="yes"
+              User="[LocalizedName_AuthenticatedUsers]"
+              GenericAll="yes"
           />
         </File>
       </Component>

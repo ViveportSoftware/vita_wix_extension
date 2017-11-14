@@ -6,7 +6,7 @@ namespace Htc.Vita.Wix.CustomAction
 {
     internal class SidTranslateExecutor : AbstractActionExecutor
     {
-        public SidTranslateExecutor(Session session) : base("SidTranslate", session)
+        public SidTranslateExecutor(Session session) : base("SidTranslateExecutor", session)
         {
         }
 
@@ -19,8 +19,9 @@ namespace Htc.Vita.Wix.CustomAction
             foreach (var row in view)
             {
                 var sid = row["Sid"].ToString();
+                var propertyId = row["PropertyId"].ToString();
                 var localizedName = new SecurityIdentifier(sid).Translate(typeof(NTAccount)).ToString();
-                Session[sid] = localizedName;
+                Session[propertyId] = localizedName;
             }
             return ActionResult.Success;
         }
