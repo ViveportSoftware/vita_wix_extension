@@ -42,6 +42,11 @@
         Key="S-1-5-32-545"
         Value="LocalizedName_Users"
     />
+    <vita:ServiceManager
+        Id="ManageService_Winmgmt"
+        Name="Winmgmt"
+        StartType="Automatic"
+    />
     <Feature
         Id="ProductFeature"
         Title="Htc.Vita.Wix.Extension.Test"

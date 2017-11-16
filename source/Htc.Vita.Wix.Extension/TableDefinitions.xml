@@ -1,6 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tableDefinitions xmlns="http://schemas.microsoft.com/wix/2006/tables">
   <tableDefinition
+      name="VitaServiceManager"
+      createSymbols="yes">
+    <columnDefinition
+        name="Name"
+        type="string"
+        length="72"
+        primaryKey="yes"
+        category="text"
+        description="Windows service name"
+    />
+    <columnDefinition
+        name="StartType"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Windows service start type"
+    />
+  </tableDefinition>
+
+  <tableDefinition
       name="VitaSidTranslator"
       createSymbols="yes">
     <columnDefinition

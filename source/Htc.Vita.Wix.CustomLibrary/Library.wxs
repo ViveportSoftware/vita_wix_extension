@@ -6,6 +6,20 @@
         SourceFile="$(var.Htc.Vita.Wix.CustomAction.net45.TargetDir)Htc.Vita.Wix.CustomAction.CA.dll"
     />
     <CustomAction
+        Id="Vita_ServiceManagerImmediate"
+        BinaryKey="Vita.Wix.CA.dll"
+        DllEntry="ServiceManageImmediate"
+        Execute="immediate"
+        Return="check"
+    />
+    <CustomAction
+        Id="Vita_ServiceManagerDeferred"
+        BinaryKey="Vita.Wix.CA.dll"
+        DllEntry="ServiceManageDeferred"
+        Execute="deferred"
+        Return="check"
+    />
+    <CustomAction
         Id="Vita_SidTranslator"
         BinaryKey="Vita.Wix.CA.dll"
         DllEntry="SidTranslate"
@@ -13,6 +27,14 @@
         Return="check"
     />
     <InstallExecuteSequence>
+      <Custom
+          Action="Vita_ServiceManagerImmediate"
+          Before="Vita_ServiceManagerDeferred"
+      />
+      <Custom
+          Action="Vita_ServiceManagerDeferred"
+          After="InstallInitialize"
+      />
       <Custom
           Action="Vita_SidTranslator"
           After="InstallInitialize"

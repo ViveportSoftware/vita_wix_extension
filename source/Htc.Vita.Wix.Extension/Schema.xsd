@@ -55,4 +55,54 @@
       </xs:attribute>
     </xs:complexType>
   </xs:element>
+
+  <xs:element name="ServiceManager">
+    <xs:annotation>
+      <xs:appinfo>
+        <xse:parent
+            namespace="http://schemas.microsoft.com/wix/2006/wi"
+            ref="Product"
+        />
+        <xse:parent
+            namespace="http://schemas.microsoft.com/wix/2006/wi"
+            ref="Fragment"
+        />
+      </xs:appinfo>
+      <xs:documentation>
+        A custom element for managing Windows service status.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute
+          name="Id"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The ID for the element.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute
+          name="Name"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The name of existing Windows service. For example Winmgmt is about Windows Management Instrumentation.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute
+          name="StartType"
+          use="required">
+        <xs:annotation>
+          <xs:documentation>The start type of Windows service: Automatic, Manual or Disabled.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Automatic" />
+            <xs:enumeration value="Manual" />
+            <xs:enumeration value="Disabled" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

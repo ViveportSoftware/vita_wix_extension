@@ -29,6 +29,9 @@ namespace Htc.Vita.Wix.Extension
                 case "Fragment":
                     switch (element.LocalName)
                     {
+                        case "ServiceManager":
+                            ParseServiceManagerElement(element);
+                            break;
                         case "SidTranslator":
                             ParseSidTranslatorElement(element);
                             break;
@@ -47,6 +50,100 @@ namespace Htc.Vita.Wix.Extension
                     );
                     break;
             }
+        }
+
+        private void ParseServiceManagerElement(XmlElement element)
+        {
+            var sourceLineNumber = Preprocessor.GetSourceLineNumbers(element);
+            string id = null;
+            string serviceName = null;
+            string serviceStartType = null;
+
+            foreach (XmlAttribute attribute in element.Attributes)
+            {
+                if (attribute.NamespaceURI.Length == 0 ||
+                        attribute.NamespaceURI == Schema.TargetNamespace)
+                {
+                    switch (attribute.LocalName)
+                    {
+                        case "Id":
+                            id = Core.GetAttributeIdentifierValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "Name":
+                            serviceName = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "StartType":
+                            serviceStartType = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+
+                        default:
+                            Core.UnexpectedAttribute(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                    }
+                }
+                else
+                {
+                    Core.UnsupportedExtensionAttribute(
+                            sourceLineNumber,
+                            attribute
+                    );
+                }
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Id"
+                ));
+            }
+
+            if (string.IsNullOrEmpty(serviceName))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Name"
+                ));
+            }
+
+            if (string.IsNullOrEmpty(serviceStartType))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "StartType"
+                ));
+            }
+
+            if (!Core.EncounteredError)
+            {
+                var serviceManagerRow = Core.CreateRow(
+                        sourceLineNumber,
+                        "VitaServiceManager"
+                );
+                serviceManagerRow[0] = serviceName;
+                serviceManagerRow[1] = serviceStartType;
+            }
+
+            Core.CreateWixSimpleReferenceRow(
+                    sourceLineNumber,
+                    "CustomAction",
+                    "Vita_ServiceManagerImmediate"
+            );
         }
 
         private void ParseSidTranslatorElement(XmlElement element)
@@ -128,12 +225,12 @@ namespace Htc.Vita.Wix.Extension
 
             if (!Core.EncounteredError)
             {
-                var sidTranslateRow = Core.CreateRow(
+                var sidTranslatorRow = Core.CreateRow(
                         sourceLineNumber,
                         "VitaSidTranslator"
                 );
-                sidTranslateRow[0] = sidKey;
-                sidTranslateRow[1] = valuePropertyId;
+                sidTranslatorRow[0] = sidKey;
+                sidTranslatorRow[1] = valuePropertyId;
             }
 
             Core.CreateWixSimpleReferenceRow(

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Principal;
+﻿using System.Security.Principal;
 using Microsoft.Deployment.WindowsInstaller;
 
 namespace Htc.Vita.Wix.CustomAction
@@ -13,15 +12,22 @@ namespace Htc.Vita.Wix.CustomAction
         protected override ActionResult OnExecute()
         {
             var database = Session.Database;
-            var view = database.OpenView("SELECT `Sid`, `PropertyId` FROM `VitaSidTranslator`");
-            view.Execute();
-
-            foreach (var row in view)
+            try
             {
-                var sid = row["Sid"].ToString();
-                var propertyId = row["PropertyId"].ToString();
-                var localizedName = new SecurityIdentifier(sid).Translate(typeof(NTAccount)).ToString();
-                Session[propertyId] = localizedName;
+                var view = database.OpenView("SELECT `Sid`, `PropertyId` FROM `VitaSidTranslator`");
+                view.Execute();
+
+                foreach (var row in view)
+                {
+                    var sid = row["Sid"].ToString();
+                    var propertyId = row["PropertyId"].ToString();
+                    var localizedName = new SecurityIdentifier(sid).Translate(typeof(NTAccount)).ToString();
+                    Session[propertyId] = localizedName;
+                }
+            }
+            finally
+            {
+                database.Close();
             }
             return ActionResult.Success;
         }
