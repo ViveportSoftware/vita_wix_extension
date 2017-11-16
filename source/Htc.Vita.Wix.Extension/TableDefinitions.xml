@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tableDefinitions xmlns="http://schemas.microsoft.com/wix/2006/tables">
   <tableDefinition
-      name="VitaSidTranslate"
+      name="VitaSidTranslator"
       createSymbols="yes">
     <columnDefinition
         name="Sid"

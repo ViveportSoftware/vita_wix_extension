@@ -6,7 +6,7 @@
         SourceFile="$(var.Htc.Vita.Wix.CustomAction.net45.TargetDir)Htc.Vita.Wix.CustomAction.CA.dll"
     />
     <CustomAction
-        Id="Vita_SidTranslate"
+        Id="Vita_SidTranslator"
         BinaryKey="Vita.Wix.CA.dll"
         DllEntry="SidTranslate"
         Execute="immediate"
@@ -14,7 +14,7 @@
     />
     <InstallExecuteSequence>
       <Custom
-          Action="Vita_SidTranslate"
+          Action="Vita_SidTranslator"
           After="InstallInitialize"
       />
     </InstallExecuteSequence>

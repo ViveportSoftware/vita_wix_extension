@@ -29,8 +29,8 @@ namespace Htc.Vita.Wix.Extension
                 case "Fragment":
                     switch (element.LocalName)
                     {
-                        case "SidTranslate":
-                            ParseSidTranslateElement(element);
+                        case "SidTranslator":
+                            ParseSidTranslatorElement(element);
                             break;
                         default:
                             Core.UnexpectedElement(
@@ -49,7 +49,7 @@ namespace Htc.Vita.Wix.Extension
             }
         }
 
-        private void ParseSidTranslateElement(XmlElement element)
+        private void ParseSidTranslatorElement(XmlElement element)
         {
             var sourceLineNumber = Preprocessor.GetSourceLineNumbers(element);
             string id = null;
@@ -130,7 +130,7 @@ namespace Htc.Vita.Wix.Extension
             {
                 var sidTranslateRow = Core.CreateRow(
                         sourceLineNumber,
-                        "VitaSidTranslate"
+                        "VitaSidTranslator"
                 );
                 sidTranslateRow[0] = sidKey;
                 sidTranslateRow[1] = valuePropertyId;
@@ -139,7 +139,7 @@ namespace Htc.Vita.Wix.Extension
             Core.CreateWixSimpleReferenceRow(
                     sourceLineNumber,
                     "CustomAction",
-                    "Vita_SidTranslate"
+                    "Vita_SidTranslator"
             );
         }
     }

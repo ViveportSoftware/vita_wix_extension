@@ -51,7 +51,7 @@
     <Compile Include="AbstractActionExecutor.cs" />
     <Compile Include="CustomAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SidTranslateExecutor.cs" />
+    <Compile Include="SidTranslatorExecutor.cs" />
     <Content Include="CustomAction.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

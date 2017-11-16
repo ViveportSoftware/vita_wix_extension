@@ -28,7 +28,7 @@
         Id="LocalizedName_AuthenticatedUsers"
         Value="Authenticated Users"
     />
-    <vita:SidTranslate
+    <vita:SidTranslator
         Id="TranslateSid_AuthenticatedUsers"
         Key="S-1-5-11"
         Value="LocalizedName_AuthenticatedUsers"
@@ -37,7 +37,7 @@
         Id="LocalizedName_Users"
         Value="Users"
     />
-    <vita:SidTranslate
+    <vita:SidTranslator
         Id="TranslateSid_Users"
         Key="S-1-5-32-545"
         Value="LocalizedName_Users"

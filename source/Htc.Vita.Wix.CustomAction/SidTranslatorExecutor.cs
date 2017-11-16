@@ -4,16 +4,16 @@ using Microsoft.Deployment.WindowsInstaller;
 
 namespace Htc.Vita.Wix.CustomAction
 {
-    internal class SidTranslateExecutor : AbstractActionExecutor
+    internal class SidTranslatorExecutor : AbstractActionExecutor
     {
-        public SidTranslateExecutor(Session session) : base("SidTranslateExecutor", session)
+        public SidTranslatorExecutor(Session session) : base("SidTranslatorExecutor", session)
         {
         }
 
         protected override ActionResult OnExecute()
         {
             var database = Session.Database;
-            var view = database.OpenView("SELECT `Sid`, `PropertyId` FROM `VitaSidTranslate`");
+            var view = database.OpenView("SELECT `Sid`, `PropertyId` FROM `VitaSidTranslator`");
             view.Execute();
 
             foreach (var row in view)

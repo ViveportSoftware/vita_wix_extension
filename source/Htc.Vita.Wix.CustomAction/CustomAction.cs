@@ -8,7 +8,7 @@ namespace Htc.Vita.Wix.CustomAction
         public static ActionResult SidTranslate(Session session)
         {
             session.Log("Begin SidTranslate");
-            var result = new SidTranslateExecutor(session).Execute();
+            var result = new SidTranslatorExecutor(session).Execute();
             session.Log("End SidTranslate");
             return result;
         }
