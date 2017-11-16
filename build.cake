@@ -19,7 +19,7 @@ var commitId = "SNAPSHOT";
 // Define product name and version
 var product = "Htc.Vita.Wix.Extension";
 var companyName = "HTC";
-var version = "0.9.0";
+var version = "0.9.1";
 var semanticVersion = string.Format("{0}.{1}", version, revision);
 var ciVersion = string.Format("{0}.{1}", version, "0");
 var nugetTags = new [] {"htc", "vita", "wix", "extension"};
