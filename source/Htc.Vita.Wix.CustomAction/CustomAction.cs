@@ -2,7 +2,7 @@ using Microsoft.Deployment.WindowsInstaller;
 
 namespace Htc.Vita.Wix.CustomAction
 {
-    public class CustomActions
+    public static class CustomActions
     {
         [CustomAction]
         public static ActionResult ServiceManageDeferred(Session session)

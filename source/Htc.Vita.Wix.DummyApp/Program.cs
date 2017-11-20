@@ -2,7 +2,7 @@
 
 namespace Htc.Vita.Wix.DummyApp
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
