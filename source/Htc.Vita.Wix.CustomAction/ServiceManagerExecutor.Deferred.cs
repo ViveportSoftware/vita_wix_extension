@@ -56,15 +56,15 @@ namespace Htc.Vita.Wix.CustomAction
                     return new ServiceInfo
                     {
                             ServiceName = serviceName,
-                            ErrorCode = Windows.ERROR_INVALID_NAME,
+                            ErrorCode = (int) Windows.Error.InvalidName,
                             ErrorMessage = "Service name \"" + serviceName + "\" is invalid"
                     };
                 }
 
-                var managerHandle = Windows.Advapi32.OpenSCManagerW(
+                var managerHandle = Windows.OpenSCManagerW(
                         null,
                         null,
-                        Windows.Advapi32.SCMAccessRight.SC_MANAGER_CONNECT
+                        Windows.ServiceControlManagerAccessRight.Connect
                 );
                 if (managerHandle == IntPtr.Zero)
                 {
@@ -82,12 +82,12 @@ namespace Htc.Vita.Wix.CustomAction
                         ServiceName = serviceName,
                         StartType = startType
                 };
-                var serviceHandle = Windows.Advapi32.OpenServiceW(
+                var serviceHandle = Windows.OpenServiceW(
                         managerHandle,
                         serviceName,
-                        Windows.Advapi32.ServiceAccessRight.SERVICE_CHANGE_CONFIG |
-                                Windows.Advapi32.ServiceAccessRight.SERVICE_QUERY_CONFIG |
-                                Windows.Advapi32.ServiceAccessRight.SERVICE_QUERY_STATUS
+                        Windows.ServiceAccessRight.ChangeConfig |
+                                Windows.ServiceAccessRight.QueryConfig |
+                                Windows.ServiceAccessRight.QueryStatus
                 );
                 if (serviceHandle == IntPtr.Zero)
                 {
@@ -97,11 +97,11 @@ namespace Htc.Vita.Wix.CustomAction
                 }
                 else
                 {
-                    var success = Windows.Advapi32.ChangeServiceConfigW(
+                    var success = Windows.ChangeServiceConfigW(
                             serviceHandle,
-                            Windows.Advapi32.SERVICE_TYPE.SERVICE_NO_CHANGE,
+                            Windows.ServiceType.NoChange,
                             ConvertToWindows(startType),
-                            Windows.Advapi32.ERROR_CONTROL_TYPE.SERVICE_NO_CHANGE,
+                            Windows.ErrorControlType.NoChange,
                             null,
                             null,
                             IntPtr.Zero,
@@ -119,10 +119,10 @@ namespace Htc.Vita.Wix.CustomAction
 
                     serviceInfo = UpdateCurrentStateInWindows(serviceHandle, serviceInfo);
 
-                    Windows.Advapi32.CloseServiceHandle(serviceHandle);
+                    Windows.CloseServiceHandle(serviceHandle);
                 }
 
-                Windows.Advapi32.CloseServiceHandle(managerHandle);
+                Windows.CloseServiceHandle(managerHandle);
                 return serviceInfo;
             }
 
@@ -133,10 +133,10 @@ namespace Htc.Vita.Wix.CustomAction
                     return false;
                 }
 
-                var managerHandle = Windows.Advapi32.OpenSCManagerW(
+                var managerHandle = Windows.OpenSCManagerW(
                         null,
                         null,
-                        Windows.Advapi32.SCMAccessRight.SC_MANAGER_CONNECT
+                        Windows.ServiceControlManagerAccessRight.Connect
                 );
                 if (managerHandle == IntPtr.Zero)
                 {
@@ -145,22 +145,22 @@ namespace Htc.Vita.Wix.CustomAction
                     return false;
                 }
 
-                var serviceHandle = Windows.Advapi32.OpenServiceW(
+                var serviceHandle = Windows.OpenServiceW(
                         managerHandle,
                         serviceName,
-                        Windows.Advapi32.ServiceAccessRight.SERVICE_QUERY_CONFIG
+                        Windows.ServiceAccessRight.QueryConfig
                 );
                 if (serviceHandle == IntPtr.Zero)
                 {
                     var errorCode = Marshal.GetLastWin32Error();
-                    if (errorCode != Windows.ERROR_SERVICE_DOES_NOT_EXIST)
+                    if (errorCode != (int) Windows.Error.ServiceDoesNotExist)
                     {
                         Log("Can not open Windows service \"" + serviceName + "\", error code: " + errorCode);
                     }
                     return false;
                 }
 
-                Windows.Advapi32.CloseServiceHandle(serviceHandle);
+                Windows.CloseServiceHandle(serviceHandle);
                 return true;
             }
 
@@ -171,15 +171,15 @@ namespace Htc.Vita.Wix.CustomAction
                     return new ServiceInfo
                     {
                             ServiceName = serviceName,
-                            ErrorCode = Windows.ERROR_INVALID_NAME,
+                            ErrorCode = (int) Windows.Error.InvalidName,
                             ErrorMessage = "Service name \"" + serviceName + "\" is invalid"
                     };
                 }
 
-                var managerHandle = Windows.Advapi32.OpenSCManagerW(
+                var managerHandle = Windows.OpenSCManagerW(
                         null,
                         null,
-                        Windows.Advapi32.SCMAccessRight.SC_MANAGER_CONNECT
+                        Windows.ServiceControlManagerAccessRight.Connect
                 );
                 if (managerHandle == IntPtr.Zero)
                 {
@@ -196,10 +196,10 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                         ServiceName = serviceName
                 };
-                var serviceHandle = Windows.Advapi32.OpenServiceW(
+                var serviceHandle = Windows.OpenServiceW(
                         managerHandle,
                         serviceName,
-                        Windows.Advapi32.ServiceAccessRight.SERVICE_QUERY_CONFIG | Windows.Advapi32.ServiceAccessRight.SERVICE_QUERY_STATUS
+                        Windows.ServiceAccessRight.QueryConfig | Windows.ServiceAccessRight.QueryStatus
                 );
                 if (serviceHandle == IntPtr.Zero)
                 {
@@ -213,18 +213,18 @@ namespace Htc.Vita.Wix.CustomAction
                     var serviceConfigPtr = Marshal.AllocHGlobal((int)bytesAllocated);
                     try
                     {
-                        uint bytes;
-                        var success = Windows.Advapi32.QueryServiceConfigW(
+                        uint bytes = 0;
+                        var success = Windows.QueryServiceConfigW(
                                 serviceHandle,
                                 serviceConfigPtr,
                                 bytesAllocated,
-                                out bytes
+                                ref bytes
                         );
                         if (success)
                         {
-                            var serviceConfig = (Windows.Advapi32.QUERY_SERVICE_CONFIG)Marshal.PtrToStructure(
+                            var serviceConfig = (Windows.QueryServiceConfig)Marshal.PtrToStructure(
                                     serviceConfigPtr,
-                                    typeof(Windows.Advapi32.QUERY_SERVICE_CONFIG)
+                                    typeof(Windows.QueryServiceConfig)
                             );
                             serviceInfo.StartType = ConvertFromWindows(serviceConfig.dwStartType);
                         }
@@ -246,10 +246,10 @@ namespace Htc.Vita.Wix.CustomAction
 
                     serviceInfo = UpdateCurrentStateInWindows(serviceHandle, serviceInfo);
 
-                    Windows.Advapi32.CloseServiceHandle(serviceHandle);
+                    Windows.CloseServiceHandle(serviceHandle);
                 }
 
-                Windows.Advapi32.CloseServiceHandle(managerHandle);
+                Windows.CloseServiceHandle(managerHandle);
                 return serviceInfo;
             }
 
@@ -262,8 +262,8 @@ namespace Htc.Vita.Wix.CustomAction
                     return serviceInfo;
                 }
 
-                var status = new Windows.Advapi32.SERVICE_STATUS();
-                var success = Windows.Advapi32.QueryServiceStatus(
+                var status = new Windows.ServiceStatus();
+                var success = Windows.QueryServiceStatus(
                         serviceHandle,
                         ref status
                 );
@@ -299,35 +299,35 @@ namespace Htc.Vita.Wix.CustomAction
                 return StartType.Automatic;
             }
 
-            private Windows.Advapi32.START_TYPE ConvertToWindows(StartType startType)
+            private Windows.StartType ConvertToWindows(StartType startType)
             {
                 if (startType == StartType.Disabled)
                 {
-                    return Windows.Advapi32.START_TYPE.SERVICE_DISABLED;
+                    return Windows.StartType.Disabled;
                 }
                 if (startType == StartType.Manual)
                 {
-                    return Windows.Advapi32.START_TYPE.SERVICE_DEMAND_START;
+                    return Windows.StartType.DemandStart;
                 }
                 if (startType == StartType.Automatic)
                 {
-                    return Windows.Advapi32.START_TYPE.SERVICE_AUTO_START;
+                    return Windows.StartType.AutoStart;
                 }
                 Log("Can not convert service start type " + startType + " in Windows. Use SERVICE_AUTO_START as fallback type");
-                return Windows.Advapi32.START_TYPE.SERVICE_AUTO_START;
+                return Windows.StartType.AutoStart;
             }
 
-            private StartType ConvertFromWindows(Windows.Advapi32.START_TYPE startType)
+            private StartType ConvertFromWindows(Windows.StartType startType)
             {
-                if (startType == Windows.Advapi32.START_TYPE.SERVICE_AUTO_START)
+                if (startType == Windows.StartType.AutoStart)
                 {
                     return StartType.Automatic;
                 }
-                if (startType == Windows.Advapi32.START_TYPE.SERVICE_DEMAND_START)
+                if (startType == Windows.StartType.DemandStart)
                 {
                     return StartType.Manual;
                 }
-                if (startType == Windows.Advapi32.START_TYPE.SERVICE_DISABLED)
+                if (startType == Windows.StartType.Disabled)
                 {
                     return StartType.Disabled;
                 }
@@ -335,33 +335,33 @@ namespace Htc.Vita.Wix.CustomAction
                 return StartType.Automatic;
             }
 
-            private CurrentState ConvertFromWindows(Windows.Advapi32.CURRENT_STATE currentState)
+            private CurrentState ConvertFromWindows(Windows.CurrentState currentState)
             {
-                if (currentState == Windows.Advapi32.CURRENT_STATE.SERVICE_CONTINUE_PENDING)
+                if (currentState == Windows.CurrentState.ContinuePending)
                 {
                     return CurrentState.ContinuePending;
                 }
-                if (currentState == Windows.Advapi32.CURRENT_STATE.SERVICE_PAUSED)
+                if (currentState == Windows.CurrentState.Paused)
                 {
                     return CurrentState.Paused;
                 }
-                if (currentState == Windows.Advapi32.CURRENT_STATE.SERVICE_PAUSE_PENDING)
+                if (currentState == Windows.CurrentState.PausePending)
                 {
                     return CurrentState.PausePending;
                 }
-                if (currentState == Windows.Advapi32.CURRENT_STATE.SERVICE_RUNNING)
+                if (currentState == Windows.CurrentState.Running)
                 {
                     return CurrentState.Running;
                 }
-                if (currentState == Windows.Advapi32.CURRENT_STATE.SERVICE_START_PENDING)
+                if (currentState == Windows.CurrentState.StartPending)
                 {
                     return CurrentState.StartPending;
                 }
-                if (currentState == Windows.Advapi32.CURRENT_STATE.SERVICE_STOPPED)
+                if (currentState == Windows.CurrentState.Stopped)
                 {
                     return CurrentState.Stopped;
                 }
-                if (currentState == Windows.Advapi32.CURRENT_STATE.SERVICE_STOP_PENDING)
+                if (currentState == Windows.CurrentState.StopPending)
                 {
                     return CurrentState.StopPending;
                 }

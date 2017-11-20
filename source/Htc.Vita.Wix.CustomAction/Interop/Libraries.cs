@@ -2,6 +2,6 @@
 {
     internal static class Libraries
     {
-        public const string Windows_advapi32 = "advapi32.dll";
+        public const string WindowsAdvapi32 = "advapi32.dll";
     }
 }
