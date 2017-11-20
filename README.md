@@ -1,6 +1,6 @@
 # HTC Vita Extension for WiX Toolset (Htc.Vita.Wix.Extension)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/f0nh7b99b08d1x7s/branch/master?svg=true)](https://ci.appveyor.com/project/kenelin/vita-wix-extension/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/f0nh7b99b08d1x7s/branch/master?svg=true)](https://ci.appveyor.com/project/kenelin/vita-wix-extension/branch/master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b3358799b224b96a292d454621f085f)](https://www.codacy.com/app/ViveportSoftware/vita_wix_extension?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ViveportSoftware/vita_wix_extension&amp;utm_campaign=Badge_Grade)
 
 ## Dependency
 
