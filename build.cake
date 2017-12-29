@@ -33,7 +33,6 @@ var signIntervalInMilli = 1000 * 5;
 
 // Define path
 var solutionFile = File(string.Format("./source/{0}.sln", product));
-var nuspecFile = File(string.Format("./source/{0}.nuspec", product));
 var customActionProjectFile = File("./source/Htc.Vita.Wix.CustomAction/Htc.Vita.Wix.CustomAction.net45.csproj");
 var customLibraryProjectFile = File("./source/Htc.Vita.Wix.CustomLibrary/Htc.Vita.Wix.CustomLibrary.wixproj");
 var extensionProjectFile = File(string.Format("./source/{0}/{0}.net45.csproj", product));
@@ -306,7 +305,7 @@ Task("Build-NuGet-Package")
             OutputDirectory = nugetDir
     };
 
-    NuGetPack(nuspecFile, nuGetPackSettings);
+    NuGetPack(nuGetPackSettings);
 });
 
 Task("Publish-NuGet-Package")
