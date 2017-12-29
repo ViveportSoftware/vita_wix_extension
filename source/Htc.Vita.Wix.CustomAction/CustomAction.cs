@@ -5,6 +5,15 @@ namespace Htc.Vita.Wix.CustomAction
     public static class CustomActions
     {
         [CustomAction]
+        public static ActionResult CurrentTimestampFetch(Session session)
+        {
+            session.Log("Begin CurrentTimestampFetch");
+            var result = new CurrentTimestampFetcherExecutor(session).Execute();
+            session.Log("End CurrentTimestampFetch");
+            return result;
+        }
+
+        [CustomAction]
         public static ActionResult ServiceManageDeferred(Session session)
         {
             session.Log("Begin ServiceManageDeferred");

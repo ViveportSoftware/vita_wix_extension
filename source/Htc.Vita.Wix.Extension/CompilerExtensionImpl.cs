@@ -29,6 +29,9 @@ namespace Htc.Vita.Wix.Extension
                 case "Fragment":
                     switch (element.LocalName)
                     {
+                        case "CurrentTimestampFetcher":
+                            ParseCurrentTimestampFetcherElement(element);
+                            break;
                         case "ServiceManager":
                             ParseServiceManagerElement(element);
                             break;
@@ -50,6 +53,102 @@ namespace Htc.Vita.Wix.Extension
                     );
                     break;
             }
+        }
+
+        private void ParseCurrentTimestampFetcherElement(XmlElement element)
+        {
+            var sourceLineNumber = Preprocessor.GetSourceLineNumbers(element);
+            string id = null;
+            string format = null;
+            string valuePropertyId = null;
+
+            foreach (XmlAttribute attribute in element.Attributes)
+            {
+                if (attribute.NamespaceURI.Length == 0 ||
+                        attribute.NamespaceURI == Schema.TargetNamespace)
+                {
+                    switch (attribute.LocalName)
+                    {
+                        case "Id":
+                            id = Core.GetAttributeIdentifierValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "Format":
+                            format = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "Value":
+                            valuePropertyId = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+
+                        default:
+                            Core.UnexpectedAttribute(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                    }
+                }
+                else
+                {
+                    Core.UnsupportedExtensionAttribute(
+                            sourceLineNumber,
+                            attribute
+                    );
+                }
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Id"
+                ));
+            }
+
+            if (string.IsNullOrEmpty(format))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Format"
+                ));
+            }
+
+            if (string.IsNullOrEmpty(valuePropertyId))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Value"
+                ));
+            }
+
+            if (!Core.EncounteredError)
+            {
+                var currentTimestampFetcherRow = Core.CreateRow(
+                        sourceLineNumber,
+                        "VitaCurrentTimestampFetcher"
+                );
+                currentTimestampFetcherRow[0] = id;
+                currentTimestampFetcherRow[1] = format;
+                currentTimestampFetcherRow[2] = valuePropertyId;
+            }
+
+            Core.CreateWixSimpleReferenceRow(
+                    sourceLineNumber,
+                    "CustomAction",
+                    "Vita_CurrentTimestampFetcher"
+            );
+
         }
 
         private void ParseServiceManagerElement(XmlElement element)

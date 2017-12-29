@@ -25,6 +25,24 @@
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Property
+        Id="InstallTimeInMilliSec"
+        Value="42000"
+    />
+    <vita:CurrentTimestampFetcher
+        Id="FetchCurrentTimestamp_InstallTimeInMilliSec"
+        Format="InMilliSec"
+        Value="InstallTimeInMilliSec"
+    />
+    <Property
+        Id="InstallTimeInSec"
+        Value="42"
+    />
+    <vita:CurrentTimestampFetcher
+        Id="FetchCurrentTimestamp_InstallTimeInSec"
+        Format="InSec"
+        Value="InstallTimeInSec"
+    />
+    <Property
         Id="LocalizedName_AuthenticatedUsers"
         Value="Authenticated Users"
     />
@@ -88,6 +106,25 @@
               GenericAll="yes"
           />
         </File>
+      </Component>
+      <Component Id="ProductComponents_InstallTimeReg">
+        <RegistryKey
+            Root="HKLM"
+            Key="Software\HTC\Vita\Wix\Extension\Test"
+            ForceCreateOnInstall="yes"
+            ForceDeleteOnUninstall="yes">
+          <RegistryValue
+              Name="InstallTimeInSec"
+              KeyPath="yes"
+              Type="string"
+              Value="[InstallTimeInSec]"
+          />
+          <RegistryValue
+              Name="InstallTimeInMilliSec"
+              Type="string"
+              Value="[InstallTimeInMilliSec]"
+          />
+        </RegistryKey>
       </Component>
     </ComponentGroup>
   </Fragment>

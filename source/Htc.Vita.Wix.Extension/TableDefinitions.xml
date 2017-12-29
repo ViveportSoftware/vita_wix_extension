@@ -1,6 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tableDefinitions xmlns="http://schemas.microsoft.com/wix/2006/tables">
   <tableDefinition
+      name="VitaCurrentTimestampFetcher"
+      createSymbols="yes">
+    <columnDefinition
+        name="Id"
+        type="string"
+        length="72"
+        primaryKey="yes"
+        category="text"
+        description="Timestamp Identifier"
+    />
+    <columnDefinition
+        name="Format"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Timestamp format"
+    />
+    <columnDefinition
+        name="PropertyId"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Identifier reference of Property to keep the current timestamp"
+    />
+  </tableDefinition>
+
+  <tableDefinition
       name="VitaServiceManager"
       createSymbols="yes">
     <columnDefinition
