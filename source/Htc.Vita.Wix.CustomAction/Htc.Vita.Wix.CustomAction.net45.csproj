@@ -54,6 +54,8 @@
     <Compile Include="Interop\Libraries.cs" />
     <Compile Include="Interop\Windows.Advapi32.cs" />
     <Compile Include="Interop\Windows.cs" />
+    <Compile Include="RegistryKeyCleanerExecutor.Deferred.cs" />
+    <Compile Include="RegistryKeyCleanerExecutor.Immediate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceManagerExecutor.Deferred.cs" />
     <Compile Include="ServiceManagerExecutor.Immediate.cs" />

@@ -62,6 +62,56 @@
     </xs:complexType>
   </xs:element>
 
+  <xs:element name="RegistryKeyCleaner">
+    <xs:annotation>
+      <xs:appinfo>
+        <xse:parent
+            namespace="http://schemas.microsoft.com/wix/2006/wi"
+            ref="Product"
+        />
+        <xse:parent
+            namespace="http://schemas.microsoft.com/wix/2006/wi"
+            ref="Fragment"
+        />
+      </xs:appinfo>
+      <xs:documentation>
+        A custom element for clean Windows registry key.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute
+          name="Id"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The ID for the element.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute
+          name="Scope"
+          use="required">
+        <xs:annotation>
+          <xs:documentation>The scope of Windows registry key: LocalMachine, CurrentUser or EachUser</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="LocalMachine" />
+            <xs:enumeration value="CurrentUser" />
+            <xs:enumeration value="EachUser" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute
+          name="Path"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The path of Windows registry key.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
   <xs:element name="SidTranslator">
     <xs:annotation>
       <xs:appinfo>

@@ -30,6 +30,35 @@
   </tableDefinition>
 
   <tableDefinition
+      name="VitaRegistryKeyCleaner"
+      createSymbols="yes">
+    <columnDefinition
+        name="Id"
+        type="string"
+        length="72"
+        primaryKey="yes"
+        category="text"
+        description="Cleaner Identifier"
+    />
+    <columnDefinition
+        name="Scope"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Key scope of Windows registry"
+    />
+    <columnDefinition
+        name="Path"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Key path of Windows registry"
+    />
+  </tableDefinition>
+
+  <tableDefinition
       name="VitaServiceManager"
       createSymbols="yes">
     <columnDefinition

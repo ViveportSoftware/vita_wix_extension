@@ -14,6 +14,24 @@ namespace Htc.Vita.Wix.CustomAction
         }
 
         [CustomAction]
+        public static ActionResult RegistryKeyCleanDeferred(Session session)
+        {
+            session.Log("Begin RegistryKeyCleanDeferred");
+            var result = new RegistryKeyCleanerExecutor.Deferred(session).Execute();
+            session.Log("End RegistryKeyCleanDeferred");
+            return result;
+        }
+
+        [CustomAction]
+        public static ActionResult RegistryKeyCleanImmediate(Session session)
+        {
+            session.Log("Begin RegistryKeyCleanImmediate");
+            var result = new RegistryKeyCleanerExecutor.Immediate(session).Execute();
+            session.Log("End RegistryKeyCleanImmediate");
+            return result;
+        }
+
+        [CustomAction]
         public static ActionResult ServiceManageDeferred(Session session)
         {
             session.Log("Begin ServiceManageDeferred");
