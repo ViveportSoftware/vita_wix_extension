@@ -18,6 +18,11 @@ namespace Htc.Vita.Wix.CustomAction
             protected override ActionResult OnExecute()
             {
                 var database = Session.Database;
+                if (!database.Tables.Contains("VitaRegistryValueCleaner"))
+                {
+                    return ActionResult.Success;
+                }
+
                 try
                 {
                     var view = database.OpenView("SELECT `Scope`, `Path`, `Name` FROM `VitaRegistryValueCleaner`");

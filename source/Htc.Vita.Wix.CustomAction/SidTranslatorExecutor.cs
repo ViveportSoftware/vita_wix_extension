@@ -12,6 +12,11 @@ namespace Htc.Vita.Wix.CustomAction
         protected override ActionResult OnExecute()
         {
             var database = Session.Database;
+            if (!database.Tables.Contains("VitaSidTranslator"))
+            {
+                return ActionResult.Success;
+            }
+
             try
             {
                 var view = database.OpenView("SELECT `Sid`, `PropertyId` FROM `VitaSidTranslator`");
