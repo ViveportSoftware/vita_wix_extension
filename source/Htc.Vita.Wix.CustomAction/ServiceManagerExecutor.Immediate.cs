@@ -13,6 +13,11 @@ namespace Htc.Vita.Wix.CustomAction
             protected override ActionResult OnExecute()
             {
                 var database = Session.Database;
+                if (!database.Tables.Contains("VitaServiceManager"))
+                {
+                    return ActionResult.Success;
+                }
+
                 try
                 {
                     var view = database.OpenView("SELECT `Name`, `StartType` FROM `VitaServiceManager`");
