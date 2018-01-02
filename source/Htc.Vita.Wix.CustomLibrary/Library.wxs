@@ -89,10 +89,12 @@
       <Custom
           Action="Vita_ServiceManagerImmediate"
           Before="Vita_ServiceManagerDeferred"
+          Overridable="yes"
       />
       <Custom
           Action="Vita_ServiceManagerDeferred"
           After="InstallInitialize"
+          Overridable="yes"
       />
       <Custom
           Action="Vita_SidTranslator"
