@@ -336,7 +336,7 @@ namespace Htc.Vita.Wix.Extension
                 ));
             }
 
-            if (string.IsNullOrEmpty(keyPath))
+            if (string.IsNullOrEmpty(keyName))
             {
                 Core.OnMessage(WixErrors.ExpectedAttribute(
                         sourceLineNumber,
