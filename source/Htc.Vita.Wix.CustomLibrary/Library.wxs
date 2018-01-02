@@ -27,6 +27,20 @@
         Return="check"
     />
     <CustomAction
+        Id="Vita_RegistryValueCleanerImmediate"
+        BinaryKey="Vita.Wix.CA.dll"
+        DllEntry="RegistryValueCleanImmediate"
+        Execute="immediate"
+        Return="check"
+    />
+    <CustomAction
+        Id="Vita_RegistryValueCleanerDeferred"
+        BinaryKey="Vita.Wix.CA.dll"
+        DllEntry="RegistryValueCleanDeferred"
+        Execute="deferred"
+        Return="check"
+    />
+    <CustomAction
         Id="Vita_ServiceManagerImmediate"
         BinaryKey="Vita.Wix.CA.dll"
         DllEntry="ServiceManageImmediate"
@@ -59,6 +73,16 @@
       />
       <Custom
           Action="Vita_RegistryKeyCleanerDeferred"
+          After="InstallInitialize"
+          Overridable="yes"
+      />
+      <Custom
+          Action="Vita_RegistryValueCleanerImmediate"
+          Before="Vita_RegistryValueCleanerDeferred"
+          Overridable="yes"
+      />
+      <Custom
+          Action="Vita_RegistryValueCleanerDeferred"
           After="InstallInitialize"
           Overridable="yes"
       />

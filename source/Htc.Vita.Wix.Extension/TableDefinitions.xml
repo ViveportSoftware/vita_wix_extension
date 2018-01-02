@@ -59,6 +59,43 @@
   </tableDefinition>
 
   <tableDefinition
+      name="VitaRegistryValueCleaner"
+      createSymbols="yes">
+    <columnDefinition
+        name="Id"
+        type="string"
+        length="72"
+        primaryKey="yes"
+        category="text"
+        description="Cleaner Identifier"
+    />
+    <columnDefinition
+        name="Scope"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Value scope of Windows registry"
+    />
+    <columnDefinition
+        name="Path"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Value path of Windows registry"
+    />
+    <columnDefinition
+        name="Name"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Value name of Windows registry"
+    />
+  </tableDefinition>
+
+  <tableDefinition
       name="VitaServiceManager"
       createSymbols="yes">
     <columnDefinition

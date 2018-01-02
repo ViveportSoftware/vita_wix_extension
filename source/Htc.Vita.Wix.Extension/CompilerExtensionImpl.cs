@@ -35,6 +35,9 @@ namespace Htc.Vita.Wix.Extension
                         case "RegistryKeyCleaner":
                             ParseRegistryKeyCleanerElement(element);
                             break;
+                        case "RegistryValueCleaner":
+                            ParseRegistryValueCleanerElement(element);
+                            break;
                         case "ServiceManager":
                             ParseServiceManagerElement(element);
                             break;
@@ -182,8 +185,8 @@ namespace Htc.Vita.Wix.Extension
                             break;
                         case "Path":
                             keyPath = Core.GetAttributeValue(
-                                sourceLineNumber,
-                                attribute
+                                    sourceLineNumber,
+                                    attribute
                             );
                             break;
 
@@ -246,6 +249,118 @@ namespace Htc.Vita.Wix.Extension
                     sourceLineNumber,
                     "CustomAction",
                     "Vita_RegistryKeyCleanerImmediate"
+            );
+        }
+
+        private void ParseRegistryValueCleanerElement(XmlElement element)
+        {
+            var sourceLineNumber = Preprocessor.GetSourceLineNumbers(element);
+            string id = null;
+            string keyScope = null;
+            string keyPath = null;
+            string keyName = null;
+
+            foreach (XmlAttribute attribute in element.Attributes)
+            {
+                if (attribute.NamespaceURI.Length == 0 ||
+                        attribute.NamespaceURI == Schema.TargetNamespace)
+                {
+                    switch (attribute.LocalName)
+                    {
+                        case "Id":
+                            id = Core.GetAttributeIdentifierValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "Scope":
+                            keyScope = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "Path":
+                            keyPath = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "Name":
+                            keyName = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+
+                        default:
+                            Core.UnexpectedAttribute(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                    }
+                }
+                else
+                {
+                    Core.UnsupportedExtensionAttribute(
+                            sourceLineNumber,
+                            attribute
+                    );
+                }
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Id"
+                ));
+            }
+
+            if (string.IsNullOrEmpty(keyScope))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Scope"
+                ));
+            }
+
+            if (string.IsNullOrEmpty(keyPath))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Path"
+                ));
+            }
+
+            if (string.IsNullOrEmpty(keyPath))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Name"
+                ));
+            }
+
+            if (!Core.EncounteredError)
+            {
+                var registryKeyCleanerRow = Core.CreateRow(
+                        sourceLineNumber,
+                        "VitaRegistryValueCleaner"
+                );
+                registryKeyCleanerRow[0] = id;
+                registryKeyCleanerRow[1] = keyScope;
+                registryKeyCleanerRow[2] = keyPath;
+                registryKeyCleanerRow[3] = keyName;
+            }
+
+            Core.CreateWixSimpleReferenceRow(
+                    sourceLineNumber,
+                    "CustomAction",
+                    "Vita_RegistryValueCleanerImmediate"
             );
         }
 

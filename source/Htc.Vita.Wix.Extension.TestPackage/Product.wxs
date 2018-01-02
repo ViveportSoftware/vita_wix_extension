@@ -68,12 +68,24 @@
     <vita:RegistryKeyCleaner
         Id="CleanRegistryKey_HklmSoftwareHtc2Test"
         Scope="LocalMachine"
-        Path="SOFTWARE\HTC2\Test -Key"
+        Path="SOFTWARE\HTC\Test -Key"
     />
     <vita:RegistryKeyCleaner
         Id="CleanRegistryKey_HkuSoftwareHtc2Test"
         Scope="EachUser"
-        Path="SOFTWARE\HTC2\Test -Key"
+        Path="Software\HTC\Test -Key"
+    />
+    <vita:RegistryValueCleaner
+        Id="CleanRegistryKey_HklmSoftwareMicrosoftWindowsCurrentVersionRun"
+        Scope="LocalMachine"
+        Path="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+        Name="TestKey"
+    />
+    <vita:RegistryValueCleaner
+        Id="CleanRegistryKey_HkuSoftwareHtc2Test"
+        Scope="EachUser"
+        Path="Software\Microsoft\Windows\CurrentVersion\Run"
+        Name="TestKey"
     />
     <Feature
         Id="ProductFeature"
@@ -89,6 +101,16 @@
       </Custom>
       <Custom
           Action="Vita_RegistryKeyCleanerDeferred"
+          After="InstallInitialize">
+        Installed AND NOT UPGRADINGPRODUCTCODE AND (REMOVE~="ALL")
+      </Custom>
+      <Custom
+          Action="Vita_RegistryValueCleanerImmediate"
+          Before="Vita_RegistryValueCleanerDeferred">
+        Installed AND NOT UPGRADINGPRODUCTCODE AND (REMOVE~="ALL")
+      </Custom>
+      <Custom
+          Action="Vita_RegistryValueCleanerDeferred"
           After="InstallInitialize">
         Installed AND NOT UPGRADINGPRODUCTCODE AND (REMOVE~="ALL")
       </Custom>

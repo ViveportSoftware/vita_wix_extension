@@ -102,6 +102,11 @@ namespace Htc.Vita.Wix.CustomAction
 
             private void DeleteRegistryKeyInCurrentUser(string path)
             {
+                if (string.IsNullOrEmpty(path))
+                {
+                    return;
+                }
+
                 try
                 {
                     Registry.CurrentUser.DeleteSubKeyTree(path);
@@ -115,30 +120,47 @@ namespace Htc.Vita.Wix.CustomAction
 
             private void DeleteRegistryKeyInEachUser(string path)
             {
-                using (var profileList = Registry.LocalMachine.OpenSubKey(ProfileListPath)) // the same in 32-bit and 64-bit mode
+                if (string.IsNullOrEmpty(path))
                 {
-                    if (profileList == null)
+                    return;
+                }
+
+                try
+                {
+                    using (var profileList = Registry.LocalMachine.OpenSubKey(ProfileListPath)) // the same in 32-bit and 64-bit mode
                     {
-                        return;
-                    }
-                    foreach (var userSid in profileList.GetSubKeyNames())
-                    {
-                        var target = userSid + "\\" + path;
-                        try
+                        if (profileList == null)
                         {
-                            Registry.Users.DeleteSubKeyTree(target);
-                            Log("Registry key \"HKU\\" + target + "\" is deleted");
+                            return;
                         }
-                        catch (ArgumentException)
+                        foreach (var userSid in profileList.GetSubKeyNames())
                         {
-                            Log("Can not find registry key \"HKU\\" + target + "\". Skipped");
+                            var target = userSid + "\\" + path;
+                            try
+                            {
+                                Registry.Users.DeleteSubKeyTree(target);
+                                Log("Registry key \"HKU\\" + target + "\" is deleted");
+                            }
+                            catch (ArgumentException)
+                            {
+                                Log("Can not find registry key \"HKU\\" + target + "\". Skipped");
+                            }
                         }
                     }
+                }
+                catch (ArgumentException)
+                {
+                    Log("Can not find registry key under \"HKU\\");
                 }
             }
 
             private void DeleteRegistryKeyInLocalMachine(string path)
             {
+                if (string.IsNullOrEmpty(path))
+                {
+                    return;
+                }
+
                 try
                 {
                     Registry.LocalMachine.DeleteSubKeyTree(path);
@@ -148,29 +170,29 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     Log("Can not find registry key \"HKLM\\" + path + "\". Skipped");
                 }
-                using (var hklm64Key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                try
                 {
-                    try
+                    using (var hklm64Key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
                     {
                         hklm64Key.DeleteSubKeyTree(path);
                         Log("Registry key \"HKLM\\" + path + "\" under 64-bit view is deleted");
                     }
-                    catch (ArgumentException)
-                    {
-                        Log("Can not find registry key \"HKLM\\" + path + "\" under 64-bit view. Skipped");
-                    }
                 }
-                using (var hklm32Key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+                catch (ArgumentException)
                 {
-                    try
+                    Log("Can not find registry key \"HKLM\\" + path + "\" under 64-bit view. Skipped");
+                }
+                try
+                {
+                    using (var hklm32Key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
                     {
                         hklm32Key.DeleteSubKeyTree(path);
                         Log("Registry key \"HKLM\\" + path + "\" under 32-bit view is deleted");
                     }
-                    catch (ArgumentException)
-                    {
-                        Log("Can not find registry key \"HKLM\\" + path + "\" under 32-bit view. Skipped");
-                    }
+                }
+                catch (ArgumentException)
+                {
+                    Log("Can not find registry key \"HKLM\\" + path + "\" under 32-bit view. Skipped");
                 }
             }
 
