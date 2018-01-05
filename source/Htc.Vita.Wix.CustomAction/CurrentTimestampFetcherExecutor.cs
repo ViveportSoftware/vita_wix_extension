@@ -19,14 +19,23 @@ namespace Htc.Vita.Wix.CustomAction
 
             try
             {
-                var view = database.OpenView("SELECT `Format`, `PropertyId` FROM `VitaCurrentTimestampFetcher`");
+                var view = database.OpenView("SELECT `Format`, `PropertyId`, `AsUtc` FROM `VitaCurrentTimestampFetcher`");
                 view.Execute();
 
                 foreach (var row in view)
                 {
+                    var currentTime = DateTime.Now;
+                    var unixStartTime = new DateTime(1970, 1, 1);
                     var format = row["Format"].ToString();
                     var propertyId = row["PropertyId"].ToString();
-                    var timeSpan = DateTime.Now - new DateTime(1970, 1, 1);
+                    int asUtc;
+                    int.TryParse(row["AsUtc"].ToString(), out asUtc);
+                    var timeSpan = currentTime - unixStartTime;
+                    if (asUtc == 1)
+                    {
+                        timeSpan = currentTime.ToUniversalTime() - unixStartTime;
+                    }
+
                     Session[propertyId] = "" + (long)timeSpan.TotalSeconds;
                     if ("InMilliSec".Equals(format))
                     {
