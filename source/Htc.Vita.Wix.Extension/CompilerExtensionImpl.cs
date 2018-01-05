@@ -67,6 +67,7 @@ namespace Htc.Vita.Wix.Extension
             string id = null;
             string format = null;
             string valuePropertyId = null;
+            var asUtc = YesNoType.No;
 
             foreach (XmlAttribute attribute in element.Attributes)
             {
@@ -89,6 +90,12 @@ namespace Htc.Vita.Wix.Extension
                             break;
                         case "Value":
                             valuePropertyId = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "AsUtc":
+                            asUtc = Core.GetAttributeYesNoValue(
                                     sourceLineNumber,
                                     attribute
                             );
@@ -147,6 +154,7 @@ namespace Htc.Vita.Wix.Extension
                 currentTimestampFetcherRow[0] = id;
                 currentTimestampFetcherRow[1] = format;
                 currentTimestampFetcherRow[2] = valuePropertyId;
+                currentTimestampFetcherRow[3] = asUtc == YesNoType.Yes ? 1 : 0;
             }
 
             Core.CreateWixSimpleReferenceRow(

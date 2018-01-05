@@ -34,6 +34,16 @@
         Value="InstallTimeInMilliSec"
     />
     <Property
+        Id="InstallTimeUtcInMilliSec"
+        Value="42000"
+    />
+    <vita:CurrentTimestampFetcher
+        Id="FetchCurrentTimestamp_InstallTimeUtcInMilliSec"
+        Format="InMilliSec"
+        Value="InstallTimeUtcInMilliSec"
+        AsUtc="yes"
+    />
+    <Property
         Id="InstallTimeInSec"
         Value="42"
     />
@@ -41,6 +51,16 @@
         Id="FetchCurrentTimestamp_InstallTimeInSec"
         Format="InSec"
         Value="InstallTimeInSec"
+    />
+    <Property
+        Id="InstallTimeUtcInSec"
+        Value="42"
+    />
+    <vita:CurrentTimestampFetcher
+        Id="FetchCurrentTimestamp_InstallTimeUtcInSec"
+        Format="InSec"
+        Value="InstallTimeUtcInSec"
+        AsUtc="yes"
     />
     <Property
         Id="LocalizedName_AuthenticatedUsers"

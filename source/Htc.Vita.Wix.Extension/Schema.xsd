@@ -5,6 +5,7 @@
     elementFormDefault="qualified"
     xmlns="http://www.viveport.com/Htc.Vita.Wix.Extension"
     xmlns:mstns="http://www.viveport.com/Htc.Vita.Wix.Extension"
+    xmlns:wix="http://schemas.microsoft.com/wix/2006/wi"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:xse="http://schemas.microsoft.com/wix/2005/XmlSchemaExtension">
   <xs:annotation>
@@ -12,6 +13,8 @@
       This XML Schema is for Htc.Vita.Wix.Extension project
     </xs:documentation>
   </xs:annotation>
+
+  <xs:import namespace="http://schemas.microsoft.com/wix/2006/wi" />
 
   <xs:element name="CurrentTimestampFetcher">
     <xs:annotation>
@@ -57,6 +60,15 @@
           type="xs:string">
         <xs:annotation>
           <xs:documentation>The property value name to keep the current timestamp.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute
+          name="AsUtc"
+          use="optional"
+          default="no"
+          type="wix:YesNoType">
+        <xs:annotation>
+          <xs:documentation>Set to true to treat timestamp as UTC</xs:documentation>
         </xs:annotation>
       </xs:attribute>
     </xs:complexType>
