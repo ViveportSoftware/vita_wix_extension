@@ -5,6 +5,15 @@ namespace Htc.Vita.Wix.CustomAction
     public static class CustomActions
     {
         [CustomAction]
+        public static ActionResult BootTimeFetch(Session session)
+        {
+            session.Log("Begin BootTimeFetch");
+            var result = new BootTimeFetcherExecutor(session).Execute();
+            session.Log("End BootTimeFetch");
+            return result;
+        }
+
+        [CustomAction]
         public static ActionResult CurrentTimestampFetch(Session session)
         {
             session.Log("Begin CurrentTimestampFetch");

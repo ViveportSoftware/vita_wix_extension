@@ -6,6 +6,13 @@
         SourceFile="$(var.Htc.Vita.Wix.CustomAction.net45.TargetDir)Htc.Vita.Wix.CustomAction.CA.dll"
     />
     <CustomAction
+        Id="Vita_BootTimeFetcher"
+        BinaryKey="Vita.Wix.CA.dll"
+        DllEntry="BootTimeFetch"
+        Execute="immediate"
+        Return="check"
+    />
+    <CustomAction
         Id="Vita_CurrentTimestampFetcher"
         BinaryKey="Vita.Wix.CA.dll"
         DllEntry="CurrentTimestampFetch"
@@ -62,6 +69,10 @@
         Return="check"
     />
     <InstallExecuteSequence>
+      <Custom
+          Action="Vita_BootTimeFetcher"
+          After="InstallInitialize"
+      />
       <Custom
           Action="Vita_CurrentTimestampFetcher"
           After="InstallInitialize"

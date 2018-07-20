@@ -49,6 +49,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AbstractActionExecutor.cs" />
+    <Compile Include="BootTimeFetcherExecutor.cs" />
     <Compile Include="CurrentTimestampFetcherExecutor.cs" />
     <Compile Include="CustomAction.cs" />
     <Compile Include="Interop\Libraries.cs" />

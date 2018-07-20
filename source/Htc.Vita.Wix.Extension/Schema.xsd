@@ -16,6 +16,51 @@
 
   <xs:import namespace="http://schemas.microsoft.com/wix/2006/wi" />
 
+  <xs:element name="BootTimeFetcher">
+    <xs:annotation>
+      <xs:appinfo>
+        <xse:parent
+            namespace="http://schemas.microsoft.com/wix/2006/wi"
+            ref="Product"
+        />
+        <xse:parent
+            namespace="http://schemas.microsoft.com/wix/2006/wi"
+            ref="Fragment"
+        />
+      </xs:appinfo>
+      <xs:documentation>
+        A custom element for fetching system boot time.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute
+          name="Id"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The ID for the element.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute
+          name="Value"
+          use="required"
+          type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The property value name to keep the system boot time.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute
+          name="AsUtc"
+          use="optional"
+          default="no"
+          type="wix:YesNoType">
+        <xs:annotation>
+          <xs:documentation>Set to true to treat system boot time as UTC</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
   <xs:element name="CurrentTimestampFetcher">
     <xs:annotation>
       <xs:appinfo>

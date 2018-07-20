@@ -29,6 +29,9 @@ namespace Htc.Vita.Wix.Extension
                 case "Fragment":
                     switch (element.LocalName)
                     {
+                        case "BootTimeFetcher":
+                            ParseBootTimeFetcherElement(element);
+                            break;
                         case "CurrentTimestampFetcher":
                             ParseCurrentTimestampFetcherElement(element);
                             break;
@@ -59,6 +62,92 @@ namespace Htc.Vita.Wix.Extension
                     );
                     break;
             }
+        }
+
+        private void ParseBootTimeFetcherElement(XmlElement element)
+        {
+            var sourceLineNumber = Preprocessor.GetSourceLineNumbers(element);
+            string id = null;
+            string valuePropertyId = null;
+            var asUtc = YesNoType.No;
+
+            foreach (XmlAttribute attribute in element.Attributes)
+            {
+                if (attribute.NamespaceURI.Length == 0 ||
+                        attribute.NamespaceURI == Schema.TargetNamespace)
+                {
+                    switch (attribute.LocalName)
+                    {
+                        case "Id":
+                            id = Core.GetAttributeIdentifierValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "Value":
+                            valuePropertyId = Core.GetAttributeValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                        case "AsUtc":
+                            asUtc = Core.GetAttributeYesNoValue(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+
+                        default:
+                            Core.UnexpectedAttribute(
+                                    sourceLineNumber,
+                                    attribute
+                            );
+                            break;
+                    }
+                }
+                else
+                {
+                    Core.UnsupportedExtensionAttribute(
+                            sourceLineNumber,
+                            attribute
+                    );
+                }
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Id"
+                ));
+            }
+
+            if (string.IsNullOrEmpty(valuePropertyId))
+            {
+                Core.OnMessage(WixErrors.ExpectedAttribute(
+                        sourceLineNumber,
+                        element.Name,
+                        "Value"
+                ));
+            }
+
+            if (!Core.EncounteredError)
+            {
+                var bootTimeFetcherRow = Core.CreateRow(
+                        sourceLineNumber,
+                        "VitaBootTimeFetcher"
+                );
+                bootTimeFetcherRow[0] = id;
+                bootTimeFetcherRow[1] = valuePropertyId;
+                bootTimeFetcherRow[2] = asUtc == YesNoType.Yes ? 1 : 0;
+            }
+
+            Core.CreateWixSimpleReferenceRow(
+                    sourceLineNumber,
+                    "CustomAction",
+                    "Vita_BootTimeFetcher"
+            );
         }
 
         private void ParseCurrentTimestampFetcherElement(XmlElement element)
@@ -162,7 +251,6 @@ namespace Htc.Vita.Wix.Extension
                     "CustomAction",
                     "Vita_CurrentTimestampFetcher"
             );
-
         }
 
         private void ParseRegistryKeyCleanerElement(XmlElement element)

@@ -25,6 +25,23 @@
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Property
+        Id="BootTime"
+        Value="42000"
+    />
+    <vita:BootTimeFetcher
+        Id="FetchBootTime_BootTime"
+        Value="BootTime"
+    />
+    <Property
+        Id="BootTimeUtc"
+        Value="42000"
+    />
+    <vita:BootTimeFetcher
+        Id="FetchBootTime_BootTimeUtc"
+        Value="BootTimeUtc"
+        AsUtc="yes"
+    />
+    <Property
         Id="InstallTimeInMilliSec"
         Value="42000"
     />
@@ -178,8 +195,13 @@
             ForceCreateOnInstall="yes"
             ForceDeleteOnUninstall="yes">
           <RegistryValue
-              Name="InstallTimeInSec"
+              Name="BootTime"
               KeyPath="yes"
+              Type="string"
+              Value="[BootTime]"
+          />
+          <RegistryValue
+              Name="InstallTimeInSec"
               Type="string"
               Value="[InstallTimeInSec]"
           />

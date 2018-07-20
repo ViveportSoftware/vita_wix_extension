@@ -1,6 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tableDefinitions xmlns="http://schemas.microsoft.com/wix/2006/tables">
   <tableDefinition
+      name="VitaBootTimeFetcher"
+      createSymbols="yes">
+    <columnDefinition
+        name="Id"
+        type="string"
+        length="72"
+        primaryKey="yes"
+        category="text"
+        description="Boot Time Identifier"
+    />
+    <columnDefinition
+        name="PropertyId"
+        type="string"
+        category="formatted"
+        length="72"
+        nullable="no"
+        description="Identifier reference of Property to keep the system boot time"
+    />
+    <columnDefinition
+        name="AsUtc"
+        type="number"
+        category="integer"
+        length="0"
+        minValue="0"
+        maxValue="1"
+        nullable="no"
+        description="Fetch as UTC"
+    />
+  </tableDefinition>
+
+  <tableDefinition
       name="VitaCurrentTimestampFetcher"
       createSymbols="yes">
     <columnDefinition
