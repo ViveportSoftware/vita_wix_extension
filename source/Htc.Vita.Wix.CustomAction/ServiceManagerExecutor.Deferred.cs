@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using Htc.Vita.Wix.CustomAction.Interop;
 using Microsoft.Deployment.WindowsInstaller;

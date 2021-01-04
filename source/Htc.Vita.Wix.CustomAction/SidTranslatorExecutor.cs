@@ -1,4 +1,4 @@
-﻿using System.Security.Principal;
+using System.Security.Principal;
 using Microsoft.Deployment.WindowsInstaller;
 
 namespace Htc.Vita.Wix.CustomAction

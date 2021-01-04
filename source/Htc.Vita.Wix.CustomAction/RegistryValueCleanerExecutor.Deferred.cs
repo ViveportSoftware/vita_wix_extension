@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Deployment.WindowsInstaller;
 using Microsoft.Win32;

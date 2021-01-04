@@ -1,4 +1,4 @@
-﻿namespace Htc.Vita.Wix.CustomAction.Interop
+namespace Htc.Vita.Wix.CustomAction.Interop
 {
     internal static class Libraries
     {

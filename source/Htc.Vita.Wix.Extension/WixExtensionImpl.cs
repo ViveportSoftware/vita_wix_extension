@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.Tools.WindowsInstallerXml;
 
 namespace Htc.Vita.Wix.Extension

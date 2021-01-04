@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Schema;
 using Microsoft.Tools.WindowsInstallerXml;
