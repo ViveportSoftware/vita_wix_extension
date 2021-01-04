@@ -1,4 +1,4 @@
-#addin "nuget:?package=Cake.Git&version=0.16.1"
+#addin "nuget:?package=Cake.Git&version=0.22.0"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
