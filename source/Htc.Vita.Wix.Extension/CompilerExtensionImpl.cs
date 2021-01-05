@@ -134,13 +134,13 @@ namespace Htc.Vita.Wix.Extension
 
             if (!Core.EncounteredError)
             {
-                var bootTimeFetcherRow = Core.CreateRow(
+                var row = Core.CreateRow(
                         sourceLineNumber,
                         "VitaBootTimeFetcher"
                 );
-                bootTimeFetcherRow[0] = id;
-                bootTimeFetcherRow[1] = valuePropertyId;
-                bootTimeFetcherRow[2] = asUtc == YesNoType.Yes ? 1 : 0;
+                row[0] = id;
+                row[1] = valuePropertyId;
+                row[2] = asUtc == YesNoType.Yes ? 1 : 0;
             }
 
             Core.CreateWixSimpleReferenceRow(
@@ -236,14 +236,14 @@ namespace Htc.Vita.Wix.Extension
 
             if (!Core.EncounteredError)
             {
-                var currentTimestampFetcherRow = Core.CreateRow(
+                var row = Core.CreateRow(
                         sourceLineNumber,
                         "VitaCurrentTimestampFetcher"
                 );
-                currentTimestampFetcherRow[0] = id;
-                currentTimestampFetcherRow[1] = format;
-                currentTimestampFetcherRow[2] = valuePropertyId;
-                currentTimestampFetcherRow[3] = asUtc == YesNoType.Yes ? 1 : 0;
+                row[0] = id;
+                row[1] = format;
+                row[2] = valuePropertyId;
+                row[3] = asUtc == YesNoType.Yes ? 1 : 0;
             }
 
             Core.CreateWixSimpleReferenceRow(
@@ -332,13 +332,13 @@ namespace Htc.Vita.Wix.Extension
 
             if (!Core.EncounteredError)
             {
-                var registryKeyCleanerRow = Core.CreateRow(
+                var row = Core.CreateRow(
                         sourceLineNumber,
                         "VitaRegistryKeyCleaner"
                 );
-                registryKeyCleanerRow[0] = id;
-                registryKeyCleanerRow[1] = keyScope;
-                registryKeyCleanerRow[2] = keyPath;
+                row[0] = id;
+                row[1] = keyScope;
+                row[2] = keyPath;
             }
 
             Core.CreateWixSimpleReferenceRow(
@@ -443,14 +443,14 @@ namespace Htc.Vita.Wix.Extension
 
             if (!Core.EncounteredError)
             {
-                var registryKeyCleanerRow = Core.CreateRow(
+                var row = Core.CreateRow(
                         sourceLineNumber,
                         "VitaRegistryValueCleaner"
                 );
-                registryKeyCleanerRow[0] = id;
-                registryKeyCleanerRow[1] = keyScope;
-                registryKeyCleanerRow[2] = keyPath;
-                registryKeyCleanerRow[3] = keyName;
+                row[0] = id;
+                row[1] = keyScope;
+                row[2] = keyPath;
+                row[3] = keyName;
             }
 
             Core.CreateWixSimpleReferenceRow(
@@ -539,12 +539,12 @@ namespace Htc.Vita.Wix.Extension
 
             if (!Core.EncounteredError)
             {
-                var serviceManagerRow = Core.CreateRow(
+                var row = Core.CreateRow(
                         sourceLineNumber,
                         "VitaServiceManager"
                 );
-                serviceManagerRow[0] = serviceName;
-                serviceManagerRow[1] = serviceStartType;
+                row[0] = serviceName;
+                row[1] = serviceStartType;
             }
 
             Core.CreateWixSimpleReferenceRow(
@@ -633,12 +633,12 @@ namespace Htc.Vita.Wix.Extension
 
             if (!Core.EncounteredError)
             {
-                var sidTranslatorRow = Core.CreateRow(
+                var row = Core.CreateRow(
                         sourceLineNumber,
                         "VitaSidTranslator"
                 );
-                sidTranslatorRow[0] = sidKey;
-                sidTranslatorRow[1] = valuePropertyId;
+                row[0] = sidKey;
+                row[1] = valuePropertyId;
             }
 
             Core.CreateWixSimpleReferenceRow(

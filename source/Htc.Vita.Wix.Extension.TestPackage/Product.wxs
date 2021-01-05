@@ -22,7 +22,10 @@
         Compressed="yes"
         InstallScope="perMachine"
     />
-    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MajorUpgrade
+        AllowSameVersionUpgrades="yes"
+        DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+    />
     <MediaTemplate EmbedCab="yes" />
     <Property
         Id="BootTime"
