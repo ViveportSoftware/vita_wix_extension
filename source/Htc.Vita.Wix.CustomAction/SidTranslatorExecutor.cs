@@ -5,6 +5,10 @@ namespace Htc.Vita.Wix.CustomAction
 {
     internal class SidTranslatorExecutor : AbstractActionExecutor
     {
+        private const string KeyNamePropertyId = "PropertyId";
+        private const string KeyNameSid = "Sid";
+        private const string TableName = "VitaSidTranslator";
+
         public SidTranslatorExecutor(Session session) : base("SidTranslatorExecutor", session)
         {
         }
@@ -12,22 +16,24 @@ namespace Htc.Vita.Wix.CustomAction
         protected override ActionResult OnExecute()
         {
             var database = Session.Database;
-            if (!database.Tables.Contains("VitaSidTranslator"))
+            if (!database.Tables.Contains(TableName))
             {
                 return ActionResult.Success;
             }
 
             try
             {
-                var view = database.OpenView("SELECT `Sid`, `PropertyId` FROM `VitaSidTranslator`");
-                view.Execute();
-
-                foreach (var row in view)
+                using (var view = database.OpenView($"SELECT `{KeyNameSid}`, `{KeyNamePropertyId}` FROM `{TableName}`"))
                 {
-                    var sid = row["Sid"].ToString();
-                    var propertyId = row["PropertyId"].ToString();
-                    var localizedName = new SecurityIdentifier(sid).Translate(typeof(NTAccount)).ToString();
-                    Session[propertyId] = localizedName;
+                    view.Execute();
+
+                    foreach (var row in view)
+                    {
+                        var sid = row[KeyNameSid].ToString();
+                        var propertyId = row[KeyNamePropertyId].ToString();
+                        var localizedName = new SecurityIdentifier(sid).Translate(typeof(NTAccount)).ToString();
+                        Session[propertyId] = localizedName;
+                    }
                 }
             }
             finally
