@@ -5,6 +5,11 @@ namespace Htc.Vita.Wix.CustomAction
 {
     internal class CurrentTimestampFetcherExecutor : AbstractActionExecutor
     {
+        private const string KeyNameAsUtc = "AsUtc";
+        private const string KeyNameFormat = "Format";
+        private const string KeyNamePropertyId = "PropertyId";
+        private const string TableName = "VitaCurrentTimestampFetcher";
+
         public CurrentTimestampFetcherExecutor(Session session) : base("CurrentTimestampFetcherExecutor", session)
         {
         }
@@ -12,34 +17,36 @@ namespace Htc.Vita.Wix.CustomAction
         protected override ActionResult OnExecute()
         {
             var database = Session.Database;
-            if (!database.Tables.Contains("VitaCurrentTimestampFetcher"))
+            if (!database.Tables.Contains(TableName))
             {
                 return ActionResult.Success;
             }
 
             try
             {
-                var view = database.OpenView("SELECT `Format`, `PropertyId`, `AsUtc` FROM `VitaCurrentTimestampFetcher`");
-                view.Execute();
-
-                foreach (var row in view)
+                using (var view = database.OpenView($"SELECT `{KeyNameFormat}`, `{KeyNamePropertyId}`, `{KeyNameAsUtc}` FROM `{TableName}`"))
                 {
-                    var currentTime = DateTime.Now;
-                    var unixStartTime = new DateTime(1970, 1, 1);
-                    var format = row["Format"].ToString();
-                    var propertyId = row["PropertyId"].ToString();
-                    int asUtc;
-                    int.TryParse(row["AsUtc"].ToString(), out asUtc);
-                    var timeSpan = currentTime - unixStartTime;
-                    if (asUtc == 1)
-                    {
-                        timeSpan = currentTime.ToUniversalTime() - unixStartTime;
-                    }
+                    view.Execute();
 
-                    Session[propertyId] = "" + (long)timeSpan.TotalSeconds;
-                    if ("InMilliSec".Equals(format))
+                    foreach (var row in view)
                     {
-                        Session[propertyId] = "" + (long)timeSpan.TotalMilliseconds;
+                        var currentTime = DateTime.Now;
+                        var unixStartTime = new DateTime(1970, 1, 1);
+                        var format = row[KeyNameFormat].ToString();
+                        var propertyId = row[KeyNamePropertyId].ToString();
+                        int asUtc;
+                        int.TryParse(row[KeyNameAsUtc].ToString(), out asUtc);
+                        var timeSpan = currentTime - unixStartTime;
+                        if (asUtc == 1)
+                        {
+                            timeSpan = currentTime.ToUniversalTime() - unixStartTime;
+                        }
+
+                        Session[propertyId] = "" + (long)timeSpan.TotalSeconds;
+                        if ("InMilliSec".Equals(format))
+                        {
+                            Session[propertyId] = "" + (long)timeSpan.TotalMilliseconds;
+                        }
                     }
                 }
             }
