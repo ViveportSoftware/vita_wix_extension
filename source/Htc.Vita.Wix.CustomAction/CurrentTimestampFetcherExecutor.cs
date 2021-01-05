@@ -42,10 +42,10 @@ namespace Htc.Vita.Wix.CustomAction
                             timeSpan = currentTime.ToUniversalTime() - unixStartTime;
                         }
 
-                        Session[propertyId] = "" + (long)timeSpan.TotalSeconds;
+                        Session[propertyId] = $"{(long) timeSpan.TotalSeconds}";
                         if ("InMilliSec".Equals(format))
                         {
-                            Session[propertyId] = "" + (long)timeSpan.TotalMilliseconds;
+                            Session[propertyId] = $"{(long) timeSpan.TotalMilliseconds}";
                         }
                     }
                 }

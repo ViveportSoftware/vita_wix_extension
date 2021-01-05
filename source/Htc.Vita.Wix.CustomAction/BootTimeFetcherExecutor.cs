@@ -39,7 +39,7 @@ namespace Htc.Vita.Wix.CustomAction
                             bootTime = DateTime.UtcNow.Subtract(TimeSpan.FromMilliseconds(Environment.TickCount));
                         }
 
-                        Session[propertyId] = "" + bootTime.ToString(CultureInfo.InvariantCulture);
+                        Session[propertyId] = $"{bootTime.ToString(CultureInfo.InvariantCulture)}";
                     }
                 }
             }
