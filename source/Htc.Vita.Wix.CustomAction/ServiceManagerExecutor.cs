@@ -5,7 +5,7 @@ using Microsoft.Deployment.WindowsInstaller;
 
 namespace Htc.Vita.Wix.CustomAction
 {
-    internal partial class ServiceManagerExecutor
+    internal class ServiceManagerExecutor
     {
         internal class Deferred : AbstractActionExecutor
         {
@@ -55,9 +55,9 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     return new ServiceInfo
                     {
-                            ServiceName = serviceName,
-                            ErrorCode = (int) Windows.Error.InvalidName,
-                            ErrorMessage = "Service name \"" + serviceName + "\" is invalid"
+                        ServiceName = serviceName,
+                        ErrorCode = (int)Windows.Error.InvalidName,
+                        ErrorMessage = "Service name \"" + serviceName + "\" is invalid"
                     };
                 }
 
@@ -71,16 +71,16 @@ namespace Htc.Vita.Wix.CustomAction
                     var errorCode = Marshal.GetLastWin32Error();
                     return new ServiceInfo
                     {
-                            ServiceName = serviceName,
-                            ErrorCode = errorCode,
-                            ErrorMessage = "Can not open Windows service controller manager, error code: " + errorCode
+                        ServiceName = serviceName,
+                        ErrorCode = errorCode,
+                        ErrorMessage = "Can not open Windows service controller manager, error code: " + errorCode
                     };
                 }
 
                 var serviceInfo = new ServiceInfo
                 {
-                        ServiceName = serviceName,
-                        StartType = startType
+                    ServiceName = serviceName,
+                    StartType = startType
                 };
                 var serviceHandle = Windows.OpenServiceW(
                         managerHandle,
@@ -153,7 +153,7 @@ namespace Htc.Vita.Wix.CustomAction
                 if (serviceHandle == IntPtr.Zero)
                 {
                     var errorCode = Marshal.GetLastWin32Error();
-                    if (errorCode != (int) Windows.Error.ServiceDoesNotExist)
+                    if (errorCode != (int)Windows.Error.ServiceDoesNotExist)
                     {
                         Log("Can not open Windows service \"" + serviceName + "\", error code: " + errorCode);
                     }
@@ -170,9 +170,9 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     return new ServiceInfo
                     {
-                            ServiceName = serviceName,
-                            ErrorCode = (int) Windows.Error.InvalidName,
-                            ErrorMessage = "Service name \"" + serviceName + "\" is invalid"
+                        ServiceName = serviceName,
+                        ErrorCode = (int)Windows.Error.InvalidName,
+                        ErrorMessage = "Service name \"" + serviceName + "\" is invalid"
                     };
                 }
 
@@ -186,15 +186,15 @@ namespace Htc.Vita.Wix.CustomAction
                     var errorCode = Marshal.GetLastWin32Error();
                     return new ServiceInfo
                     {
-                            ServiceName = serviceName,
-                            ErrorCode = errorCode,
-                            ErrorMessage = "Can not open Windows service controller manager, error code: " + errorCode
+                        ServiceName = serviceName,
+                        ErrorCode = errorCode,
+                        ErrorMessage = "Can not open Windows service controller manager, error code: " + errorCode
                     };
                 }
 
                 var serviceInfo = new ServiceInfo
                 {
-                        ServiceName = serviceName
+                    ServiceName = serviceName
                 };
                 var serviceHandle = Windows.OpenServiceW(
                         managerHandle,
@@ -367,6 +367,41 @@ namespace Htc.Vita.Wix.CustomAction
                 }
                 Log("Can not convert Windows service current state " + currentState + ". Use Unknown as fallback state");
                 return CurrentState.Unknown;
+            }
+        }
+
+        internal class Immediate : AbstractActionExecutor
+        {
+            public Immediate(Session session) : base("ServiceManagerExecutor.Immediate", session)
+            {
+            }
+
+            protected override ActionResult OnExecute()
+            {
+                var database = Session.Database;
+                if (!database.Tables.Contains("VitaServiceManager"))
+                {
+                    return ActionResult.Success;
+                }
+
+                try
+                {
+                    var view = database.OpenView("SELECT `Name`, `StartType` FROM `VitaServiceManager`");
+                    view.Execute();
+
+                    var customActionData = new CustomActionData();
+                    foreach (var row in view)
+                    {
+                        customActionData[row["Name"].ToString()] = row["StartType"].ToString();
+                    }
+
+                    Session["Vita_ServiceManagerDeferred"] = customActionData.ToString();
+                }
+                finally
+                {
+                    database.Close();
+                }
+                return ActionResult.Success;
             }
         }
 
