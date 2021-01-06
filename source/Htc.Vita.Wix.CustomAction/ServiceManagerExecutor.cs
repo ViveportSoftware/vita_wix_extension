@@ -28,7 +28,7 @@ namespace Htc.Vita.Wix.CustomAction
                 var exists = CheckIfExistsInWindows(name);
                 if (!exists)
                 {
-                    Log("Can not find Windows service " + name + ". Skipped");
+                    Log($"Can not find Windows service \"{name}\". Skipped");
                     return;
                 }
 
@@ -36,14 +36,14 @@ namespace Htc.Vita.Wix.CustomAction
                 var serviceInfo = QueryStartTypeInWindows(name);
                 if (serviceInfo != null && serviceInfo.StartType == type)
                 {
-                    Log("Windows service " + name + " has the same start type: " + startType + ". Skipped");
+                    Log($"Windows service \"{name}\" has the same start type: {startType}. Skipped");
                     return;
                 }
 
                 serviceInfo = ChangeStartTypeInWindows(name, type);
                 if (serviceInfo != null && serviceInfo.StartType == type)
                 {
-                    Log("Windows service " + name + " has been changed start type to " + startType);
+                    Log($"Windows service \"{name}\" has been changed start type to {startType}");
                 }
             }
 
@@ -57,7 +57,7 @@ namespace Htc.Vita.Wix.CustomAction
                     {
                         ServiceName = serviceName,
                         ErrorCode = (int)Windows.Error.InvalidName,
-                        ErrorMessage = "Service name \"" + serviceName + "\" is invalid"
+                        ErrorMessage = $"Service name \"{serviceName}\" is invalid"
                     };
                 }
 
@@ -73,7 +73,7 @@ namespace Htc.Vita.Wix.CustomAction
                     {
                         ServiceName = serviceName,
                         ErrorCode = errorCode,
-                        ErrorMessage = "Can not open Windows service controller manager, error code: " + errorCode
+                        ErrorMessage = $"Can not open Windows service controller manager, error code: {errorCode}"
                     };
                 }
 
@@ -93,7 +93,7 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     var errorCode = Marshal.GetLastWin32Error();
                     serviceInfo.ErrorCode = errorCode;
-                    serviceInfo.ErrorMessage = "Can not open Windows service \"" + serviceName + "\", error code: " + errorCode;
+                    serviceInfo.ErrorMessage = $"Can not open Windows service \"{serviceName}\", error code: {errorCode}";
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace Htc.Vita.Wix.CustomAction
                     {
                         var errorCode = Marshal.GetLastWin32Error();
                         serviceInfo.ErrorCode = errorCode;
-                        serviceInfo.ErrorMessage = "Can not change Windows service \"" + serviceName + "\" config, error code: " + errorCode;
+                        serviceInfo.ErrorMessage = $"Can not change Windows service \"{serviceName}\" config, error code: {errorCode}";
                     }
 
                     serviceInfo = UpdateCurrentStateInWindows(serviceHandle, serviceInfo);
@@ -141,7 +141,7 @@ namespace Htc.Vita.Wix.CustomAction
                 if (managerHandle == IntPtr.Zero)
                 {
                     var errorCode = Marshal.GetLastWin32Error();
-                    Log("Can not open Windows service controller manager, error code: " + errorCode);
+                    Log($"Can not open Windows service controller manager, error code: {errorCode}");
                     return false;
                 }
 
@@ -155,7 +155,7 @@ namespace Htc.Vita.Wix.CustomAction
                     var errorCode = Marshal.GetLastWin32Error();
                     if (errorCode != (int)Windows.Error.ServiceDoesNotExist)
                     {
-                        Log("Can not open Windows service \"" + serviceName + "\", error code: " + errorCode);
+                        Log($"Can not open Windows service \"{serviceName}\", error code: {errorCode}");
                     }
                     return false;
                 }
@@ -172,7 +172,7 @@ namespace Htc.Vita.Wix.CustomAction
                     {
                         ServiceName = serviceName,
                         ErrorCode = (int)Windows.Error.InvalidName,
-                        ErrorMessage = "Service name \"" + serviceName + "\" is invalid"
+                        ErrorMessage = $"Service name \"{serviceName}\" is invalid"
                     };
                 }
 
@@ -188,7 +188,7 @@ namespace Htc.Vita.Wix.CustomAction
                     {
                         ServiceName = serviceName,
                         ErrorCode = errorCode,
-                        ErrorMessage = "Can not open Windows service controller manager, error code: " + errorCode
+                        ErrorMessage = $"Can not open Windows service controller manager, error code: {errorCode}"
                     };
                 }
 
@@ -205,7 +205,7 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     var errorCode = Marshal.GetLastWin32Error();
                     serviceInfo.ErrorCode = errorCode;
-                    serviceInfo.ErrorMessage = "Can not open Windows service \"" + serviceName + "\", error code: " + errorCode;
+                    serviceInfo.ErrorMessage = $"Can not open Windows service \"{serviceName}\", error code: {errorCode}";
                 }
                 else
                 {
@@ -232,12 +232,12 @@ namespace Htc.Vita.Wix.CustomAction
                         {
                             var errorCode = Marshal.GetLastWin32Error();
                             serviceInfo.ErrorCode = errorCode;
-                            serviceInfo.ErrorMessage = "Can not query Windows service \"" + serviceName + "\" config, error code: " + errorCode;
+                            serviceInfo.ErrorMessage = $"Can not query Windows service \"{serviceName}\" config, error code: {errorCode}";
                         }
                     }
                     catch (Exception e)
                     {
-                        Log("Can not query Windows service \"" + serviceName + "\" start type: " + e.Message);
+                        Log($"Can not query Windows service \"{serviceName}\" start type: {e.Message}");
                     }
                     finally
                     {
@@ -275,7 +275,7 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     var errorCode = Marshal.GetLastWin32Error();
                     serviceInfo.ErrorCode = errorCode;
-                    serviceInfo.ErrorMessage = "Can not query Windows service \"" + serviceInfo.ServiceName + "\" status, error code: " + errorCode;
+                    serviceInfo.ErrorMessage = $"Can not query Windows service \"{serviceInfo.ServiceName}\" status, error code: {errorCode}";
                 }
 
                 return serviceInfo;
@@ -295,7 +295,7 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     return StartType.Manual;
                 }
-                Log("Can not convert service start type " + startType + ". Use Automatic as fallback type");
+                Log($"Can not convert service start type {startType}. Use Automatic as fallback type");
                 return StartType.Automatic;
             }
 
@@ -313,7 +313,7 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     return Windows.StartType.AutoStart;
                 }
-                Log("Can not convert service start type " + startType + " in Windows. Use SERVICE_AUTO_START as fallback type");
+                Log($"Can not convert service start type {startType} in Windows. Use SERVICE_AUTO_START as fallback type");
                 return Windows.StartType.AutoStart;
             }
 
@@ -331,7 +331,7 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     return StartType.Disabled;
                 }
-                Log("Can not convert Windows service start type " + startType + ". Use Automatic as fallback type");
+                Log($"Can not convert Windows service start type {startType}. Use Automatic as fallback type");
                 return StartType.Automatic;
             }
 
@@ -365,13 +365,17 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     return CurrentState.StopPending;
                 }
-                Log("Can not convert Windows service current state " + currentState + ". Use Unknown as fallback state");
+                Log($"Can not convert Windows service current state {currentState}. Use Unknown as fallback state");
                 return CurrentState.Unknown;
             }
         }
 
         internal class Immediate : AbstractActionExecutor
         {
+            private const string KeyNameName = "Name";
+            private const string KeyNameStartType = "StartType";
+            private const string TableName = "VitaServiceManager";
+
             public Immediate(Session session) : base("ServiceManagerExecutor.Immediate", session)
             {
             }
@@ -379,23 +383,25 @@ namespace Htc.Vita.Wix.CustomAction
             protected override ActionResult OnExecute()
             {
                 var database = Session.Database;
-                if (!database.Tables.Contains("VitaServiceManager"))
+                if (!database.Tables.Contains(TableName))
                 {
                     return ActionResult.Success;
                 }
 
                 try
                 {
-                    var view = database.OpenView("SELECT `Name`, `StartType` FROM `VitaServiceManager`");
-                    view.Execute();
-
-                    var customActionData = new CustomActionData();
-                    foreach (var row in view)
+                    using (var view = database.OpenView($"SELECT `{KeyNameName}`, `{KeyNameStartType}` FROM `{TableName}`"))
                     {
-                        customActionData[row["Name"].ToString()] = row["StartType"].ToString();
-                    }
+                        view.Execute();
 
-                    Session["Vita_ServiceManagerDeferred"] = customActionData.ToString();
+                        var customActionData = new CustomActionData();
+                        foreach (var row in view)
+                        {
+                            customActionData[row[KeyNameName].ToString()] = row[KeyNameStartType].ToString();
+                        }
+
+                        Session["Vita_ServiceManagerDeferred"] = customActionData.ToString();
+                    }
                 }
                 finally
                 {
