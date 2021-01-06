@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using Microsoft.Deployment.WindowsInstaller;
 
@@ -6,6 +6,10 @@ namespace Htc.Vita.Wix.CustomAction
 {
     internal class BootTimeFetcherExecutor : AbstractActionExecutor
     {
+        private const string KeyNameAsUtc = "AsUtc";
+        private const string KeyNamePropertyId = "PropertyId";
+        private const string TableName = "VitaBootTimeFetcher";
+
         public BootTimeFetcherExecutor(Session session) : base("BootTimeFetcherExecutor", session)
         {
         }
@@ -13,28 +17,30 @@ namespace Htc.Vita.Wix.CustomAction
         protected override ActionResult OnExecute()
         {
             var database = Session.Database;
-            if (!database.Tables.Contains("VitaBootTimeFetcher"))
+            if (!database.Tables.Contains(TableName))
             {
                 return ActionResult.Success;
             }
 
             try
             {
-                var view = database.OpenView("SELECT `PropertyId`, `AsUtc` FROM `VitaBootTimeFetcher`");
-                view.Execute();
-
-                foreach (var row in view)
+                using (var view = database.OpenView($"SELECT `{KeyNamePropertyId}`, `{KeyNameAsUtc}` FROM `{TableName}`"))
                 {
-                    var propertyId = row["PropertyId"].ToString();
-                    int asUtc;
-                    int.TryParse(row["AsUtc"].ToString(), out asUtc);
-                    var bootTime = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(Environment.TickCount));
-                    if (asUtc == 1)
-                    {
-                        bootTime = DateTime.UtcNow.Subtract(TimeSpan.FromMilliseconds(Environment.TickCount));
-                    }
+                    view.Execute();
 
-                    Session[propertyId] = "" + bootTime.ToString(CultureInfo.InvariantCulture);
+                    foreach (var row in view)
+                    {
+                        var propertyId = row[KeyNamePropertyId].ToString();
+                        int asUtc;
+                        int.TryParse(row[KeyNameAsUtc].ToString(), out asUtc);
+                        var bootTime = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(Environment.TickCount));
+                        if (asUtc == 1)
+                        {
+                            bootTime = DateTime.UtcNow.Subtract(TimeSpan.FromMilliseconds(Environment.TickCount));
+                        }
+
+                        Session[propertyId] = $"{bootTime.ToString(CultureInfo.InvariantCulture)}";
+                    }
                 }
             }
             finally

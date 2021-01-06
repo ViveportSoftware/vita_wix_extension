@@ -1,4 +1,4 @@
-#addin "nuget:?package=Cake.Git&version=0.16.1"
+#addin "nuget:?package=Cake.Git&version=0.22.0"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -18,25 +18,28 @@ var commitId = "SNAPSHOT";
 
 // Define product name and version
 var product = "Htc.Vita.Wix.Extension";
+var productCustomAction = "Htc.Vita.Wix.CustomAction";
+var productCustomLibrary = "Htc.Vita.Wix.CustomLibrary";
 var companyName = "HTC";
 var version = "0.9.3";
-var semanticVersion = string.Format("{0}.{1}", version, revision);
-var ciVersion = string.Format("{0}.{1}", version, "0");
+var semanticVersion = $"{version}.{revision}";
+var ciVersion = $"{version}.0";
+var buildVersion = "Release".Equals(configuration) ? semanticVersion : $"{ciVersion}-CI{revision}";
 var nugetTags = new [] {"htc", "vita", "wix", "extension"};
 
 // Define copyright
-var copyright = string.Format("Copyright © 2017 - {0}", DateTime.Now.Year);
+var copyright = $"Copyright © 2017 - {DateTime.Now.Year}";
 
 // Define timestamp for signing
 var lastSignTimestamp = DateTime.Now;
 var signIntervalInMilli = 1000 * 5;
 
 // Define path
-var solutionFile = File(string.Format("./source/{0}.sln", product));
-var customActionProjectFile = File("./source/Htc.Vita.Wix.CustomAction/Htc.Vita.Wix.CustomAction.net45.csproj");
-var customLibraryProjectFile = File("./source/Htc.Vita.Wix.CustomLibrary/Htc.Vita.Wix.CustomLibrary.wixproj");
-var extensionProjectFile = File(string.Format("./source/{0}/{0}.net45.csproj", product));
-var extensionTestBundleProjectFile = File(string.Format("./source/{0}.TestBundle/{0}.TestBundle.wixproj", product));
+var solutionFile = File($"./source/{product}.sln");
+var customActionProjectFile = File($"./source/{productCustomAction}/{productCustomAction}.net45.csproj");
+var customLibraryProjectFile = File($"./source/{productCustomLibrary}/{productCustomLibrary}.wixproj");
+var extensionProjectFile = File($"./source/{product}/{product}.net45.csproj");
+var extensionTestBundleProjectFile = File($"./source/{product}.TestBundle/{product}.TestBundle.wixproj");
 
 // Define directories.
 var distDir = Directory("./dist");
@@ -73,17 +76,10 @@ Task("Display-Config")
     .IsDependentOn("Fetch-Git-Commit-ID")
     .Does(() =>
 {
-    Information("Build target: {0}", target);
-    Information("Build configuration: {0}", configuration);
-    Information("Build commitId: {0}", commitId);
-    if ("Release".Equals(configuration))
-    {
-        Information("Build version: {0}", semanticVersion);
-    }
-    else
-    {
-        Information("Build version: {0}-CI{1}", ciVersion, revision);
-    }
+    Information($"Build target:        {target}");
+    Information($"Build configuration: {configuration}");
+    Information($"Build commitId:      {commitId}");
+    Information($"Build version:       {buildVersion}");
 });
 
 Task("Clean-Workspace")
@@ -100,7 +96,7 @@ Task("Restore-NuGet-Packages")
     .IsDependentOn("Clean-Workspace")
     .Does(() =>
 {
-    NuGetRestore(string.Format("./source/{0}.sln", product));
+    NuGetRestore(new FilePath($"./source/{product}.sln"));
 });
 
 Task("Generate-AssemblyInfo")
@@ -108,22 +104,17 @@ Task("Generate-AssemblyInfo")
     .Does(() =>
 {
     CreateDirectory(generatedDir);
-    var file = "./source/Generated/SharedAssemblyInfo.cs";
-    var assemblyVersion = semanticVersion;
-    if (!"Release".Equals(configuration))
-    {
-        assemblyVersion = ciVersion;
-    }
+    var assemblyVersion = "Release".Equals(configuration) ? semanticVersion : ciVersion;
     CreateAssemblyInfo(
-            file,
+            new FilePath("./source/generated/SharedAssemblyInfo.cs"),
             new AssemblyInfoSettings
             {
                     Company = companyName,
                     Copyright = copyright,
-                    Product = string.Format("{0} : {1}", product, commitId),
-                    Version = version,
                     FileVersion = assemblyVersion,
-                    InformationalVersion = assemblyVersion
+                    InformationalVersion = assemblyVersion,
+                    Product = $"{product} : {commitId}",
+                    Version = version
             }
     );
 });
@@ -145,14 +136,17 @@ Task("Sign-Wix-Custom-Action")
     .Does(() =>
 {
     var currentSignTimestamp = DateTime.Now;
-    Information("Last timestamp:    " + lastSignTimestamp);
-    Information("Current timestamp: " + currentSignTimestamp);
+    Information($"Last timestamp:    {lastSignTimestamp}");
+    Information($"Current timestamp: {currentSignTimestamp}");
     var totalTimeInMilli = (DateTime.Now - lastSignTimestamp).TotalMilliseconds;
 
     var signKey = "./temp/key.pfx";
-    System.IO.File.WriteAllBytes(signKey, Convert.FromBase64String(signKeyEnc));
+    System.IO.File.WriteAllBytes(
+            signKey,
+            Convert.FromBase64String(signKeyEnc)
+    );
 
-    var file = string.Format("./temp/{0}/{1}/bin/net45/{1}.CA.dll", configuration, "Htc.Vita.Wix.CustomAction");
+    var file = $"./temp/{configuration}/{productCustomAction}/bin/net45/{productCustomAction}.CA.dll";
 
     if (totalTimeInMilli < signIntervalInMilli)
     {
@@ -213,15 +207,17 @@ Task("Sign-Wix-Extension")
     .Does(() =>
 {
     var currentSignTimestamp = DateTime.Now;
-    Information("Last timestamp:    " + lastSignTimestamp);
-    Information("Current timestamp: " + currentSignTimestamp);
+    Information($"Last timestamp:    {lastSignTimestamp}");
+    Information($"Current timestamp: {currentSignTimestamp}");
     var totalTimeInMilli = (DateTime.Now - lastSignTimestamp).TotalMilliseconds;
 
     var signKey = "./temp/key.pfx";
-    System.IO.File.WriteAllBytes(signKey, Convert.FromBase64String(signKeyEnc));
+    System.IO.File.WriteAllBytes(
+            signKey,
+            Convert.FromBase64String(signKeyEnc)
+    );
 
-    var file = string.Format("./temp/{0}/{1}/bin/net45/{1}.dll", configuration, "Htc.Vita.Wix.Extension");
-
+    var file = $"./temp/{configuration}/{product}/bin/net45/{product}.dll";
     if (totalTimeInMilli < signIntervalInMilli)
     {
         System.Threading.Thread.Sleep(signIntervalInMilli - (int)totalTimeInMilli);
@@ -269,18 +265,12 @@ Task("Build-NuGet-Package")
     .Does(() =>
 {
     CreateDirectory(nugetDir);
-    var nugetPackVersion = semanticVersion;
-    if (!"Release".Equals(configuration))
-    {
-        nugetPackVersion = string.Format("{0}-CI{1}", ciVersion, revision);
-    }
-    Information("Pack version: {0}", nugetPackVersion);
     var nuGetPackSettings = new NuGetPackSettings
     {
             Id = product,
-            Version = nugetPackVersion,
+            Version = buildVersion,
             Authors = new[] {"HTC"},
-            Description = "[CommitId: " + commitId + "]",
+            Description = $"[CommitId: {commitId}]",
             Copyright = copyright,
             Tags = nugetTags,
             RequireLicenseAcceptance= false,
@@ -288,12 +278,12 @@ Task("Build-NuGet-Package")
             {
                     new NuSpecContent
                     {
-                            Source = string.Format("{0}/bin/net45/{0}.dll", product),
+                            Source = $"{product}/bin/net45/{product}.dll",
                             Target = "tools\\lib"
                     },
                     new NuSpecContent
                     {
-                            Source = string.Format("{0}/bin/net45/{0}.pdb", product),
+                            Source = $"{product}/bin/net45/{product}.pdb",
                             Target = "tools\\lib"
                     },
             },
@@ -313,19 +303,12 @@ Task("Publish-NuGet-Package")
     .IsDependentOn("Build-NuGet-Package")
     .Does(() =>
 {
-    var nugetPushVersion = semanticVersion;
-    if (!"Release".Equals(configuration))
-    {
-        nugetPushVersion = string.Format("{0}-CI{1}", ciVersion, revision);
-    }
-    Information("Publish version: {0}", nugetPushVersion);
-    var package = string.Format("./dist/{0}/nuget/{1}.{2}.nupkg", configuration, product, nugetPushVersion);
     NuGetPush(
-            package,
+            new FilePath($"./dist/{configuration}/nuget/{product}.{buildVersion}.nupkg"),
             new NuGetPushSettings
             {
-                    Source = nugetSource,
-                    ApiKey = nugetApiKey
+                    ApiKey = nugetApiKey,
+                    Source = nugetSource
             }
     );
 });

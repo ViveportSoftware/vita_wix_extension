@@ -1,12 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Deployment.WindowsInstaller;
 using Microsoft.Win32;
 
 namespace Htc.Vita.Wix.CustomAction
 {
-    internal partial class RegistryValueCleanerExecutor
+    internal class RegistryValueCleanerExecutor
     {
+        private const string KeyNameName = "Name";
+        private const string KeyNamePath = "Path";
+        private const string KeyNameScope = "Scope";
+        private const string PrefixName = KeyNameName + "_";
+        private const string PrefixPath = KeyNamePath + "_";
+        private const string PrefixScope = KeyNameScope + "_";
+
         internal class Deferred : AbstractActionExecutor
         {
             private const string ProfileListPath = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList";
@@ -30,7 +37,7 @@ namespace Htc.Vita.Wix.CustomAction
                     }
                     catch (Exception e)
                     {
-                        Log("CleanRegistryValue error: " + e);
+                        Log($"CleanRegistryValue error: {e}");
                     }
                 }
                 return ActionResult.Success;
@@ -61,7 +68,7 @@ namespace Htc.Vita.Wix.CustomAction
                     }
                     else
                     {
-                        Log("Duplicate registry root id: " + id + ", value: " + value);
+                        Log($"Duplicate registry root id: {id}, value: {value}");
                     }
                 }
                 if (key.StartsWith(PrefixPath))
@@ -82,7 +89,7 @@ namespace Htc.Vita.Wix.CustomAction
                     }
                     else
                     {
-                        Log("Duplicate registry path id: " + id + ", value: " + value);
+                        Log($"Duplicate registry path id: {id}, value: {value}");
                     }
                 }
                 if (key.StartsWith(PrefixName))
@@ -103,7 +110,7 @@ namespace Htc.Vita.Wix.CustomAction
                     }
                     else
                     {
-                        Log("Duplicate registry name id: " + id + ", value: " + value);
+                        Log($"Duplicate registry name id: {id}, value: {value}");
                     }
                 }
             }
@@ -125,7 +132,7 @@ namespace Htc.Vita.Wix.CustomAction
                 }
                 else
                 {
-                    Log("Can not determine Windows registry scope: " + scope);
+                    Log($"Can not determine Windows registry scope: {scope}");
                 }
             }
 
@@ -143,13 +150,13 @@ namespace Htc.Vita.Wix.CustomAction
                         if (hkcuSubKey != null)
                         {
                             hkcuSubKey.DeleteValue(name);
-                            Log("Registry value \"" + name + "\" under \"HKCU\\" + path + "\" is deleted");
+                            Log($"Registry value \"{name}\" under \"HKCU\\{path}\" is deleted");
                         }
                     }
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry value \"" + name + "\" under \"HKCU\\" + path + "\". Skipped");
+                    Log($"Can not find registry value \"{name}\" under \"HKCU\\{path}\". Skipped");
                 }
             }
 
@@ -176,13 +183,13 @@ namespace Htc.Vita.Wix.CustomAction
                                 if (hkuSubKey != null)
                                 {
                                     hkuSubKey.DeleteValue(name);
-                                    Log("Registry value \"" + name + "\" under \"HKU\\" + target + "\" is deleted");
+                                    Log($"Registry value \"{name}\" under \"HKU\\{target}\" is deleted");
                                 }
                             }
                         }
                         catch (ArgumentException)
                         {
-                            Log("Can not find registry value \"" + name + "\" under \"HKU\\" + target + "\". Skipped");
+                            Log($"Can not find registry value \"{name}\" under \"HKU\\{target}\". Skipped");
                         }
                     }
                 }
@@ -202,55 +209,61 @@ namespace Htc.Vita.Wix.CustomAction
                         if (hklmSubKey != null)
                         {
                             hklmSubKey.DeleteValue(name);
-                            Log("Registry value \"" + name + "\" under \"HKLM\\" + path + "\" is deleted");
+                            Log($"Registry value \"{name}\" under \"HKLM\\{path}\" is deleted");
                         }
                     }
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry value \"" + name + "\" under \"HKLM\\" + path + "\". Skipped");
+                    Log($"Can not find registry value \"{name}\" under \"HKLM\\{path}\". Skipped");
                 }
                 catch (Exception e)
                 {
-                    Log("Can not delete registry value \"" + name + "\" under \"HKLM\\" + path + "\". " + e);
+                    Log($"Can not delete registry value \"{name}\" under \"HKLM\\{path}\". {e}");
                 }
                 try
                 {
-                    using (var hklm64SubKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(path, true))
+                    using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
                     {
-                        if (hklm64SubKey != null)
+                        using (var hklm64SubKey = baseKey.OpenSubKey(path, true))
                         {
-                            hklm64SubKey.DeleteValue(name);
-                            Log("Registry value \"" + name + "\" under 64-bit view of \"HKLM\\" + path + "\" is deleted");
+                            if (hklm64SubKey != null)
+                            {
+                                hklm64SubKey.DeleteValue(name);
+                                Log($"Registry value \"{name}\" under 64-bit view of \"HKLM\\{path}\" is deleted");
+                            }
                         }
                     }
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry value \"" + name + "\" under 64-bit view of \"HKLM\\" + path + "\". Skipped");
+                    Log($"Can not find registry value \"{name}\" under 64-bit view of \"HKLM\\{path}\". Skipped");
                 }
                 catch (Exception e)
                 {
-                    Log("Can not delete registry value \"" + name + "\" under 64-bit view of \"HKLM\\" + path + "\". " + e);
+                    Log($"Can not delete registry value \"{name}\" under 64-bit view of \"HKLM\\{path}\". {e}");
                 }
                 try
                 {
-                    using (var hklm32SubKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(path, true))
+                    using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
                     {
-                        if (hklm32SubKey != null)
+                        using (var hklm32SubKey = baseKey.OpenSubKey(path, true))
                         {
-                            hklm32SubKey.DeleteValue(name);
-                            Log("Registry value \"" + name + "\" under 32-bit view of \"HKLM\\" + path + "\" is deleted");
+                            if (hklm32SubKey != null)
+                            {
+                                hklm32SubKey.DeleteValue(name);
+                                Log($"Registry value \"{name}\" under 32-bit view of \"HKLM\\{path}\" is deleted");
+                            }
                         }
                     }
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry value \"" + name + "\" under 32-bit view of \"HKLM\\" + path + "\". Skipped");
+                    Log($"Can not find registry value \"{name}\" under 32-bit view of \"HKLM\\{path}\". Skipped");
                 }
                 catch (Exception e)
                 {
-                    Log("Can not delete registry value \"" + name + "\" under 32-bit view of \"HKLM\\" + path + "\". " + e);
+                    Log($"Can not delete registry value \"{name}\" under 32-bit view of \"HKLM\\{path}\". {e}");
                 }
             }
 
@@ -268,8 +281,50 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     return Scope.EachUser;
                 }
-                Log("Can not convert Windows registry scope " + scope + ". Use LocalMachine as fallback scope");
+                Log($"Can not convert Windows registry scope {scope}. Use LocalMachine as fallback scope");
                 return Scope.LocalMachine;
+            }
+        }
+
+        internal class Immediate : AbstractActionExecutor
+        {
+            private const string TableName = "VitaRegistryValueCleaner";
+
+            public Immediate(Session session) : base("RegistryValueCleanerExecutor.Immediate", session)
+            {
+            }
+
+            protected override ActionResult OnExecute()
+            {
+                var database = Session.Database;
+                if (!database.Tables.Contains(TableName))
+                {
+                    return ActionResult.Success;
+                }
+
+                try
+                {
+                    using (var view = database.OpenView($"SELECT `{KeyNameScope}`, `{KeyNamePath}`, `{KeyNameName}` FROM `{TableName}`"))
+                    {
+                        view.Execute();
+
+                        var customActionData = new CustomActionData();
+                        foreach (var row in view)
+                        {
+                            var index = Math.Abs(($"{row[KeyNameScope]}_{row[KeyNamePath]}_{row[KeyNameName]}").GetHashCode());
+                            customActionData[PrefixScope + index] = row[KeyNameScope].ToString();
+                            customActionData[PrefixPath + index] = row[KeyNamePath].ToString();
+                            customActionData[PrefixName + index] = row[KeyNameName].ToString();
+                        }
+
+                        Session["Vita_RegistryValueCleanerDeferred"] = customActionData.ToString();
+                    }
+                }
+                finally
+                {
+                    database.Close();
+                }
+                return ActionResult.Success;
             }
         }
 
