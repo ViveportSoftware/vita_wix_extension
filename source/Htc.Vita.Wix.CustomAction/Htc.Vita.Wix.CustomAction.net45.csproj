@@ -58,8 +58,7 @@
     <Compile Include="Interop\Windows.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistryKeyCleanerExecutor.cs" />
-    <Compile Include="RegistryValueCleanerExecutor.Deferred.cs" />
-    <Compile Include="RegistryValueCleanerExecutor.Immediate.cs" />
+    <Compile Include="RegistryValueCleanerExecutor.cs" />
     <Compile Include="ServiceManagerExecutor.Deferred.cs" />
     <Compile Include="ServiceManagerExecutor.Immediate.cs" />
     <Compile Include="SidTranslatorExecutor.cs" />
