@@ -7,8 +7,10 @@ namespace Htc.Vita.Wix.CustomAction
 {
     internal class RegistryKeyCleanerExecutor
     {
-        private const string PrefixPath = "Path_";
-        private const string PrefixScope = "Scope_";
+        private const string KeyNamePath = "Path";
+        private const string KeyNameScope = "Scope";
+        private const string PrefixPath = KeyNamePath + "_";
+        private const string PrefixScope = KeyNameScope + "_";
 
         internal class Deferred : AbstractActionExecutor
         {
@@ -56,7 +58,7 @@ namespace Htc.Vita.Wix.CustomAction
                     }
                     else
                     {
-                        Log("Duplicate registry root id: " + id + ", value: " + value);
+                        Log($"Duplicate registry root id: {id}, value: {value}");
                     }
                 }
                 if (key.StartsWith(PrefixPath))
@@ -77,7 +79,7 @@ namespace Htc.Vita.Wix.CustomAction
                     }
                     else
                     {
-                        Log("Duplicate registry path id: " + id + ", value: " + value);
+                        Log($"Duplicate registry path id: {id}, value: {value}");
                     }
                 }
             }
@@ -99,7 +101,7 @@ namespace Htc.Vita.Wix.CustomAction
                 }
                 else
                 {
-                    Log("Can not determine Windows registry scope: " + scope);
+                    Log($"Can not determine Windows registry scope: {scope}");
                 }
             }
 
@@ -113,11 +115,11 @@ namespace Htc.Vita.Wix.CustomAction
                 try
                 {
                     Registry.CurrentUser.DeleteSubKeyTree(path);
-                    Log("Registry key \"HKCU\\" + path + "\" is deleted");
+                    Log($"Registry key \"HKCU\\{path}\" is deleted");
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry key \"HKCU\\" + path + "\". Skipped");
+                    Log($"Can not find registry key \"HKCU\\{path}\". Skipped");
                 }
             }
 
@@ -138,22 +140,22 @@ namespace Htc.Vita.Wix.CustomAction
                         }
                         foreach (var userSid in profileList.GetSubKeyNames())
                         {
-                            var target = userSid + "\\" + path;
+                            var target = $"{userSid}\\{path}";
                             try
                             {
                                 Registry.Users.DeleteSubKeyTree(target);
-                                Log("Registry key \"HKU\\" + target + "\" is deleted");
+                                Log($"Registry key \"HKU\\{target}\" is deleted");
                             }
                             catch (ArgumentException)
                             {
-                                Log("Can not find registry key \"HKU\\" + target + "\". Skipped");
+                                Log($"Can not find registry key \"HKU\\{target}\". Skipped");
                             }
                         }
                     }
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry key under \"HKU\\");
+                    Log("Can not find registry key under \"HKU\"");
                 }
             }
 
@@ -167,35 +169,35 @@ namespace Htc.Vita.Wix.CustomAction
                 try
                 {
                     Registry.LocalMachine.DeleteSubKeyTree(path);
-                    Log("Registry key \"HKLM\\" + path + "\" is deleted");
+                    Log($"Registry key \"HKLM\\{path}\" is deleted");
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry key \"HKLM\\" + path + "\". Skipped");
+                    Log($"Can not find registry key \"HKLM\\{path}\". Skipped");
                 }
                 try
                 {
                     using (var hklm64Key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
                     {
                         hklm64Key.DeleteSubKeyTree(path);
-                        Log("Registry key \"HKLM\\" + path + "\" under 64-bit view is deleted");
+                        Log($"Registry key \"HKLM\\{path}\" under 64-bit view is deleted");
                     }
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry key \"HKLM\\" + path + "\" under 64-bit view. Skipped");
+                    Log($"Can not find registry key \"HKLM\\{path}\" under 64-bit view. Skipped");
                 }
                 try
                 {
                     using (var hklm32Key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
                     {
                         hklm32Key.DeleteSubKeyTree(path);
-                        Log("Registry key \"HKLM\\" + path + "\" under 32-bit view is deleted");
+                        Log($"Registry key \"HKLM\\{path}\" under 32-bit view is deleted");
                     }
                 }
                 catch (ArgumentException)
                 {
-                    Log("Can not find registry key \"HKLM\\" + path + "\" under 32-bit view. Skipped");
+                    Log($"Can not find registry key \"HKLM\\{path}\" under 32-bit view. Skipped");
                 }
             }
 
@@ -213,13 +215,15 @@ namespace Htc.Vita.Wix.CustomAction
                 {
                     return Scope.EachUser;
                 }
-                Log("Can not convert Windows registry scope " + scope + ". Use LocalMachine as fallback scope");
+                Log($"Can not convert Windows registry scope {scope}. Use LocalMachine as fallback scope");
                 return Scope.LocalMachine;
             }
         }
 
         internal class Immediate : AbstractActionExecutor
         {
+            private const string TableName = "VitaRegistryKeyCleaner";
+
             public Immediate(Session session) : base("RegistryKeyCleanerExecutor.Immediate", session)
             {
             }
@@ -227,25 +231,27 @@ namespace Htc.Vita.Wix.CustomAction
             protected override ActionResult OnExecute()
             {
                 var database = Session.Database;
-                if (!database.Tables.Contains("VitaRegistryKeyCleaner"))
+                if (!database.Tables.Contains(TableName))
                 {
                     return ActionResult.Success;
                 }
 
                 try
                 {
-                    var view = database.OpenView("SELECT `Scope`, `Path` FROM `VitaRegistryKeyCleaner`");
-                    view.Execute();
-
-                    var customActionData = new CustomActionData();
-                    foreach (var row in view)
+                    using (var view = database.OpenView($"SELECT `{KeyNameScope}`, `{KeyNamePath}` FROM `{TableName}`"))
                     {
-                        var index = Math.Abs(("" + row["Scope"] + "_" + row["Path"]).GetHashCode());
-                        customActionData[PrefixScope + index] = row["Scope"].ToString();
-                        customActionData[PrefixPath + index] = row["Path"].ToString();
-                    }
+                        view.Execute();
 
-                    Session["Vita_RegistryKeyCleanerDeferred"] = customActionData.ToString();
+                        var customActionData = new CustomActionData();
+                        foreach (var row in view)
+                        {
+                            var index = Math.Abs(($"{row[KeyNameScope]}_{row[KeyNamePath]}").GetHashCode());
+                            customActionData[PrefixScope + index] = row[KeyNameScope].ToString();
+                            customActionData[PrefixPath + index] = row[KeyNamePath].ToString();
+                        }
+
+                        Session["Vita_RegistryKeyCleanerDeferred"] = customActionData.ToString();
+                    }
                 }
                 finally
                 {
