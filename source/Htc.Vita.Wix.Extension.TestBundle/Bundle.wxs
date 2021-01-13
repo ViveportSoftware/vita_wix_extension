@@ -1,12 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix
-    xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
   <Bundle
       Name="Htc.Vita.Wix.Extension.TestBundle"
       Manufacturer="HTC Corp."
       UpgradeCode="66960f01-ce93-4df1-ab23-a09e141d3a1d"
       Version="!(bind.packageVersion.Htc.Vita.Wix.Extension.TestPackage.x86)">
-    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+    <BootstrapperApplicationRef
+        Id="WixStandardBootstrapperApplication.HyperlinkLargeLicense">
+      <bal:WixStandardBootstrapperApplication
+          LicenseUrl="https://github.com/ViveportSoftware/vita_wix_extension/blob/master/LICENSE.md"
+          ShowVersion="yes"
+          LocalizationFile="Resources/wix3/HyperlinkTheme.wxl"
+          LogoFile="Resources/wix3/logo.png"
+          ThemeFile="Resources/wix3/HyperlinkLargeTheme.xml"
+      />
+      <!-- Default locale: 1033 (en_US) -->
+      <!--
+      <Payload
+          Id="theme_en_US_layout"
+          Compressed="yes"
+          Name="1033\thm.xml"
+          SourceFile="Resources/wix3/HyperlinkLargeTheme.xml"
+      />
+      <Payload
+          Id="theme_en_US_string"
+          Compressed="yes"
+          Name="1033\thm.wxl"
+          SourceFile="Resources/wix3/HyperlinkTheme.wxl"
+      />
+      <Payload
+          Id="theme_en_US_logo"
+          Compressed="yes"
+          Name="1033\logo.png"
+          SourceFile="Resources/wix3/logo.png"
+      />
+      -->
+      <Payload
+          Id="theme_zh_TW_string"
+          Compressed="yes"
+          Name="1028\thm.wxl"
+          SourceFile="Resources/wix3/1028/HyperlinkTheme.wxl"
+      />
+    </BootstrapperApplicationRef>
     <Variable
         Name="InstallFolder"
         Type="string"
