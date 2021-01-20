@@ -12,36 +12,21 @@
       <bal:WixStandardBootstrapperApplication
           LicenseUrl="https://github.com/ViveportSoftware/vita_wix_extension/blob/master/LICENSE.md"
           ShowVersion="yes"
-          LocalizationFile="Resources/wix3/HyperlinkTheme.wxl"
-          LogoFile="Resources/wix3/logo.png"
-          ThemeFile="Resources/wix3/HyperlinkLargeTheme.xml"
-      />
-      <!-- Default locale: 1033 (en_US) -->
-      <!--
-      <Payload
-          Id="theme_en_US_layout"
-          Compressed="yes"
-          Name="1033\thm.xml"
-          SourceFile="Resources/wix3/HyperlinkLargeTheme.xml"
+          LocalizationFile="../packages/Htc.Vita.Wix.Themes.0.9.0.4/content/wix3/HyperlinkTheme.wxl"
+          LogoFile="../packages/Htc.Vita.Wix.Themes.0.9.0.4/content/wix3/logo.png"
+          ThemeFile="../packages/Htc.Vita.Wix.Themes.0.9.0.4/content/wix3/HyperlinkLargeTheme.xml"
       />
       <Payload
-          Id="theme_en_US_string"
+          Id="theme_zh_CN_string"
           Compressed="yes"
-          Name="1033\thm.wxl"
-          SourceFile="Resources/wix3/HyperlinkTheme.wxl"
+          Name="2052\thm.wxl"
+          SourceFile="../packages/Htc.Vita.Wix.Themes.0.9.0.4/content/wix3/2052/HyperlinkTheme.wxl"
       />
-      <Payload
-          Id="theme_en_US_logo"
-          Compressed="yes"
-          Name="1033\logo.png"
-          SourceFile="Resources/wix3/logo.png"
-      />
-      -->
       <Payload
           Id="theme_zh_TW_string"
           Compressed="yes"
           Name="1028\thm.wxl"
-          SourceFile="Resources/wix3/1028/HyperlinkTheme.wxl"
+          SourceFile="../packages/Htc.Vita.Wix.Themes.0.9.0.4/content/wix3/1028/HyperlinkTheme.wxl"
       />
     </BootstrapperApplicationRef>
     <Variable

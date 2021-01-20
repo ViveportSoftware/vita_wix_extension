@@ -46,12 +46,6 @@
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\wix3\1028\HyperlinkTheme.wxl" />
-    <Content Include="Resources\wix3\HyperlinkLargeTheme.xml" />
-    <Content Include="Resources\wix3\HyperlinkTheme.wxl" />
-    <Content Include="Resources\wix3\logo.png" />
-  </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
   <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
